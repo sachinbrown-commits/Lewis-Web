@@ -13,14 +13,17 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllers();
 
-// Configure DbContext with SQLite
-var defaultConnection = "Data Source=lewis.db";
+// Configure DbContext with SQL Server
+var defaultConnection = "Server=localhost;Database=LewisStoresDb;Trusted_Connection=true;Encrypt=false;";
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
     ?? Environment.GetEnvironmentVariable("CONNECTION_STRINGS__DEFAULT_CONNECTION")
     ?? defaultConnection;
 
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlite(connectionString));
+    options.UseSqlServer(connectionString, sqlServerOptionsAction =>
+    {
+        sqlServerOptionsAction.MigrationsAssembly("LewisStores.Api");
+    }));
 
 // Configure CORS
 builder.Services.AddCors(options =>
@@ -176,17 +179,39 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-// Create and seed database if it doesn't exist
+// Create and initialize database
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-    if (resetDatabaseOnStart)
+    try
     {
-        db.Database.EnsureDeleted();
-    }
+        if (resetDatabaseOnStart)
+        {
+            db.Database.EnsureDeleted();
+            System.Console.WriteLine("Database deleted for reset.");
+        }
 
-    db.Database.EnsureCreated();
+        // Ensure database and schema are created
+        if (!db.Database.CanConnect())
+        {
+            db.Database.EnsureCreated();
+            System.Console.WriteLine("Database created successfully.");
+        }
+        else
+        {
+            // Database exists, ensure tables are created
+            db.Database.EnsureCreated();
+            System.Console.WriteLine("Database already exists. Schema verified.");
+        }
+
+        System.Console.WriteLine("Database initialization completed successfully.");
+    }
+    catch (Exception ex)
+    {
+        System.Console.WriteLine($"Error during database initialization: {ex.Message}");
+        throw;
+    }
 }
 
 app.Run();

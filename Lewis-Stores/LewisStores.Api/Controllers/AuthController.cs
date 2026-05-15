@@ -79,10 +79,11 @@ namespace LewisStores.Api.Controllers
                 return BadRequest(new { Message = "Email and password are required." });
             }
 
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == request.Email);
+            var email = request.Email.Trim();
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email.ToLower() == email.ToLower());
             if (user == null || user.Password != request.Password)
             {
-                await AddAuditAsync("auth.login.failed", null, "Warning", $"{{\"email\":\"{request.Email.Trim()}\"}}");
+                await AddAuditAsync("auth.login.failed", null, "Warning", $"{{\"email\":\"{email}\"}}");
                 return Unauthorized(new { Message = "Invalid credentials." });
             }
 

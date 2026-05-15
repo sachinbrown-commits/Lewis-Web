@@ -203,78 +203,79 @@ namespace LewisStores.Api.Data
 
         private static IEnumerable<User> BuildUsersSeed()
         {
-            var roles = new[] { "Customer", "Customer", "Customer", "Support", "StoreAssociate", "Manager", "QaTester" };
+            var roles = new[] { "Customer", "Customer", "Customer", "Customer", "Customer", "SupportAgent", "Admin" };
             var users = new List<User>
             {
+                // Test credentials from SETUP-GUIDE
                 new User
                 {
-                    Id = "user-1",
-                    Email = "test@student.com",
-                    Password = "password",
+                    Id = "user-test-customer",
+                    Email = "test.customer@lewisstores.local",
+                    Password = "Password123!",
                     Role = "Customer",
                     FullName = "Test Customer",
-                    Phone = "+27 82 555 0123",
-                    Address = "12 Mandela Street, Sandton, Johannesburg, 2196"
+                    Phone = "+27 82 555 0001",
+                    Address = "123 Test Street, Johannesburg, 2000"
                 },
                 new User
                 {
-                    Id = "admin-1",
-                    Email = "admin@lewis.com",
-                    Password = "password",
+                    Id = "user-sarah-johnson",
+                    Email = "sarah.johnson@lewisstores.local",
+                    Password = "Password123!",
+                    Role = "Customer",
+                    FullName = "Sarah Johnson",
+                    Phone = "+27 82 555 0002",
+                    Address = "456 Main Road, Cape Town, 8000"
+                },
+                new User
+                {
+                    Id = "user-michael-chen",
+                    Email = "michael.chen@lewisstores.local",
+                    Password = "Password123!",
+                    Role = "Customer",
+                    FullName = "Michael Chen",
+                    Phone = "+27 82 555 0003",
+                    Address = "789 Park Avenue, Johannesburg, 2000"
+                },
+                new User
+                {
+                    Id = "user-emily-wilson",
+                    Email = "emily.wilson@lewisstores.local",
+                    Password = "Password123!",
+                    Role = "Customer",
+                    FullName = "Emily Wilson",
+                    Phone = "+27 82 555 0004",
+                    Address = "321 Garden Lane, Pretoria, 0001"
+                },
+                new User
+                {
+                    Id = "user-james-brown",
+                    Email = "james.brown@lewisstores.local",
+                    Password = "Password123!",
+                    Role = "Customer",
+                    FullName = "James Brown",
+                    Phone = "+27 82 555 0005",
+                    Address = "654 Beach Drive, Durban, 4001"
+                },
+                new User
+                {
+                    Id = "user-support-agent",
+                    Email = "support.agent@lewisstores.local",
+                    Password = "Password123!",
+                    Role = "SupportAgent",
+                    FullName = "Support Agent",
+                    Phone = "+27 82 555 0006",
+                    Address = "Lewis Support Centre, Johannesburg"
+                },
+                new User
+                {
+                    Id = "user-admin",
+                    Email = "admin@lewisstores.local",
+                    Password = "Password123!",
                     Role = "Admin",
                     FullName = "Lewis Admin",
-                    Phone = "+27 82 000 1111",
+                    Phone = "+27 82 555 0007",
                     Address = "Lewis Head Office, Johannesburg"
-                },
-                new User
-                {
-                    Id = "demo-admin",
-                    Email = "admin@lewis-training.com",
-                    Password = "Admin123!",
-                    Role = "Admin",
-                    FullName = "Lewis Training Admin",
-                    Phone = "+27 82 700 1000",
-                    Address = "Lewis Training HQ, Johannesburg"
-                },
-                new User
-                {
-                    Id = "demo-manager",
-                    Email = "manager@lewis-training.com",
-                    Password = "Manager123!",
-                    Role = "Manager",
-                    FullName = "Lewis Training Manager",
-                    Phone = "+27 82 700 1001",
-                    Address = "Lewis Training HQ, Johannesburg"
-                },
-                new User
-                {
-                    Id = "demo-support",
-                    Email = "support@lewis-training.com",
-                    Password = "Support123!",
-                    Role = "Support",
-                    FullName = "Lewis Training Support",
-                    Phone = "+27 82 700 1002",
-                    Address = "Lewis Training HQ, Johannesburg"
-                },
-                new User
-                {
-                    Id = "demo-qa",
-                    Email = "qa@lewis-training.com",
-                    Password = "Qa123!",
-                    Role = "QaTester",
-                    FullName = "Lewis QA Tester",
-                    Phone = "+27 82 700 1003",
-                    Address = "Lewis Training HQ, Johannesburg"
-                },
-                new User
-                {
-                    Id = "demo-associate",
-                    Email = "associate@lewis-training.com",
-                    Password = "Associate123!",
-                    Role = "StoreAssociate",
-                    FullName = "Lewis Store Associate",
-                    Phone = "+27 82 700 1004",
-                    Address = "Lewis Training HQ, Johannesburg"
                 }
             };
 
@@ -299,17 +300,18 @@ namespace LewisStores.Api.Data
         private static IEnumerable<Order> BuildOrdersSeed()
         {
             var statuses = new[] { "Processing", "Packed", "Shipped", "Delivered", "Cancelled", "Refunded" };
+            var userIds = new[] { "user-test-customer", "user-sarah-johnson", "user-michael-chen", "user-emily-wilson", "user-james-brown" };
             var orders = new List<Order>
             {
-                new Order { Id = "LWS-20419", Date = "08 Apr 2026", Status = "Delivered", Total = 11799, UserId = "user-1", Items = "Samsung 65\" 4K Smart TV + LG Soundbar" },
-                new Order { Id = "LWS-20388", Date = "01 Apr 2026", Status = "Shipped", Total = 24999, UserId = "user-1", Items = "Luca Modular Sofa + Miren Coffee Table" },
-                new Order { Id = "LWS-20293", Date = "22 Mar 2026", Status = "Processing", Total = 7699, UserId = "user-1", Items = "Defy 8kg Front Loader Washing Machine" },
-                new Order { Id = "LWS-20144", Date = "13 Mar 2026", Status = "Delivered", Total = 19999, UserId = "user-1", Items = "Samsung 580L Double Door Fridge" }
+                new Order { Id = "LWS-20419", Date = "08 Apr 2026", Status = "Delivered", Total = 11799, UserId = "user-test-customer", Items = "Samsung 65\" 4K Smart TV + LG Soundbar" },
+                new Order { Id = "LWS-20388", Date = "01 Apr 2026", Status = "Shipped", Total = 24999, UserId = "user-test-customer", Items = "Luca Modular Sofa + Miren Coffee Table" },
+                new Order { Id = "LWS-20293", Date = "22 Mar 2026", Status = "Processing", Total = 7699, UserId = "user-test-customer", Items = "Defy 8kg Front Loader Washing Machine" },
+                new Order { Id = "LWS-20144", Date = "13 Mar 2026", Status = "Delivered", Total = 19999, UserId = "user-test-customer", Items = "Samsung 580L Double Door Fridge" }
             };
 
-            for (var i = 20500; i <= 20620; i++)
+            for (var i = 20500; i <= 20520; i++)
             {
-                var userIndex = 2 + ((i - 20500) % 40);
+                var userIndex = (i - 20500) % userIds.Length;
                 var status = statuses[(i - 20500) % statuses.Length];
                 var date = DateTime.UtcNow.Date.AddDays(-((i - 20500) % 75));
                 orders.Add(new Order
@@ -318,7 +320,7 @@ namespace LewisStores.Api.Data
                     Date = date.ToString("dd MMM yyyy", CultureInfo.InvariantCulture),
                     Status = status,
                     Total = 899 + ((i * 37) % 25000),
-                    UserId = $"user-{userIndex}",
+                    UserId = userIds[userIndex],
                     Items = $"Bundle {(i % 9) + 1}: Mixed home goods set"
                 });
             }
