@@ -1,5 +1,5 @@
 {
-  "version": 4,
+  "version": 3,
   "targets": {
     "net8.0": {
       "Azure.Core/1.38.0": {
@@ -4158,19 +4158,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Anoona Sithole\\.nuget\\packages\\": {}
+    "/root/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Anoona Sithole\\Desktop\\Lewis-Web\\Lewis-Stores\\LewisStores.Api\\LewisStores.Api.csproj",
+      "projectUniqueName": "/mnt/c/Users/Anoona Sithole/Desktop/Lewis-Web/Lewis-Stores/LewisStores.Api/LewisStores.Api.csproj",
       "projectName": "LewisStores.Api",
-      "projectPath": "C:\\Users\\Anoona Sithole\\Desktop\\Lewis-Web\\Lewis-Stores\\LewisStores.Api\\LewisStores.Api.csproj",
-      "packagesPath": "C:\\Users\\Anoona Sithole\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Anoona Sithole\\Desktop\\Lewis-Web\\Lewis-Stores\\LewisStores.Api\\obj\\",
+      "projectPath": "/mnt/c/Users/Anoona Sithole/Desktop/Lewis-Web/Lewis-Stores/LewisStores.Api/LewisStores.Api.csproj",
+      "packagesPath": "/root/.nuget/packages/",
+      "outputPath": "/mnt/c/Users/Anoona Sithole/Desktop/Lewis-Web/Lewis-Stores/LewisStores.Api/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\Anoona Sithole\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "/root/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
@@ -4180,7 +4180,6 @@
       },
       "frameworks": {
         "net8.0": {
-          "framework": "net8.0",
           "targetAlias": "net8.0",
           "projectReferences": {}
         }
@@ -4195,11 +4194,10 @@
         "auditLevel": "low",
         "auditMode": "direct"
       },
-      "SdkAnalysisLevel": "10.0.300"
+      "SdkAnalysisLevel": "10.0.100"
     },
     "frameworks": {
       "net8.0": {
-        "framework": "net8.0",
         "targetAlias": "net8.0",
         "dependencies": {
           "Microsoft.AspNetCore.Authentication.JwtBearer": {
@@ -4239,19 +4237,15 @@
         "downloadDependencies": [
           {
             "name": "Microsoft.AspNetCore.App.Ref",
-            "version": "[8.0.27, 8.0.27]"
+            "version": "[8.0.26, 8.0.26]"
           },
           {
-            "name": "Microsoft.NETCore.App.Host.win-x64",
-            "version": "[8.0.27, 8.0.27]"
+            "name": "Microsoft.NETCore.App.Host.linux-x64",
+            "version": "[8.0.26, 8.0.26]"
           },
           {
             "name": "Microsoft.NETCore.App.Ref",
-            "version": "[8.0.27, 8.0.27]"
-          },
-          {
-            "name": "Microsoft.WindowsDesktop.App.Ref",
-            "version": "[8.0.27, 8.0.27]"
+            "version": "[8.0.26, 8.0.26]"
           }
         ],
         "frameworkReferences": {
@@ -4262,7 +4256,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.300/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/var/snap/dotnet/common/dotnet/sdk/10.0.107/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

@@ -138,6 +138,16 @@
             Returns the full list of products.
             </summary>
         </member>
+        <member name="M:LewisStores.Api.Controllers.ProductsController.CreateProduct(LewisStores.Api.Controllers.ProductsController.CreateProductRequest)">
+            <summary>
+            Creates a new product and stores its initial stock quantity.
+            </summary>
+        </member>
+        <member name="M:LewisStores.Api.Controllers.ProductsController.UpdateProductStock(System.String,LewisStores.Api.Controllers.ProductsController.UpdateProductStockRequest)">
+            <summary>
+            Updates the stock quantity for an existing product.
+            </summary>
+        </member>
         <member name="M:LewisStores.Api.Controllers.ProductsController.GetProduct(System.String)">
             <summary>
             Returns a single product by identifier.
