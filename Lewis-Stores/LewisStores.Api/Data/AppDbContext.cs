@@ -300,7 +300,40 @@ namespace LewisStores.Api.Data
         private static IEnumerable<Order> BuildOrdersSeed()
         {
             var statuses = new[] { "Processing", "Packed", "Shipped", "Delivered", "Cancelled", "Refunded" };
-            var userIds = new[] { "user-test-customer", "user-sarah-johnson", "user-michael-chen", "user-emily-wilson", "user-james-brown" };
+            var userIds = new[]
+            {
+                "user-test-customer",
+                "user-sarah-johnson",
+                "user-michael-chen",
+                "user-emily-wilson",
+                "user-james-brown",
+                "user-support-agent",
+                "user-admin",
+                "user-2",
+                "user-3",
+                "user-4",
+                "user-5",
+                "user-6",
+                "user-7",
+                "user-8",
+                "user-9",
+                "user-10",
+                "user-11",
+                "user-12",
+                "user-13",
+                "user-14",
+                "user-15",
+                "user-16",
+                "user-17",
+                "user-18",
+                "user-19",
+                "user-20",
+                "user-21",
+                "user-22",
+                "user-23",
+                "user-24",
+                "user-25"
+            };
             var orders = new List<Order>
             {
                 new Order { Id = "LWS-20419", Date = "08 Apr 2026", Status = "Delivered", Total = 11799, UserId = "user-test-customer", Items = "Samsung 65\" 4K Smart TV + LG Soundbar" },
@@ -309,7 +342,7 @@ namespace LewisStores.Api.Data
                 new Order { Id = "LWS-20144", Date = "13 Mar 2026", Status = "Delivered", Total = 19999, UserId = "user-test-customer", Items = "Samsung 580L Double Door Fridge" }
             };
 
-            for (var i = 20500; i <= 20520; i++)
+            for (var i = 20500; i <= 20749; i++)
             {
                 var userIndex = (i - 20500) % userIds.Length;
                 var status = statuses[(i - 20500) % statuses.Length];
@@ -335,13 +368,13 @@ namespace LewisStores.Api.Data
                 new PaymentMethod { Id = 1, UserId = "user-1", CardholderName = "Test Customer", Last4 = "4242", Brand = "Visa", Expiry = "12/29", IsDefault = true }
             };
 
-            for (var i = 2; i <= 36; i++)
+            for (var i = 2; i <= 120; i++)
             {
                 methods.Add(new PaymentMethod
                 {
                     Id = i,
-                    UserId = $"user-{(i % 24) + 2}",
-                    CardholderName = $"Student Persona {(i % 24) + 2:00}",
+                    UserId = $"user-{((i - 2) % 49) + 2}",
+                    CardholderName = $"Student Persona {((i - 2) % 49) + 2:00}",
                     Last4 = (1000 + i).ToString(),
                     Brand = i % 2 == 0 ? "Visa" : "Mastercard",
                     Expiry = $"{((i % 12) + 1):00}/{27 + (i % 4)}",
@@ -377,7 +410,7 @@ namespace LewisStores.Api.Data
                 }
             };
 
-            for (var i = 3; i <= 150; i++)
+            for (var i = 3; i <= 300; i++)
             {
                 logs.Add(new AuditLog
                 {
@@ -398,7 +431,7 @@ namespace LewisStores.Api.Data
         private static IEnumerable<ReturnRequest> BuildReturnRequestsSeed()
         {
             var baseTime = new DateTime(2026, 4, 12, 8, 0, 0, DateTimeKind.Utc);
-            return new List<ReturnRequest>
+            var returns = new List<ReturnRequest>
             {
                 new ReturnRequest
                 {
@@ -440,12 +473,32 @@ namespace LewisStores.Api.Data
                     UpdatedAtUtc = baseTime.AddDays(5)
                 }
             };
+
+            var statuses = new[] { "PendingReview", "Approved", "Rejected", "Resolved" };
+            for (var i = 4; i <= 120; i++)
+            {
+                returns.Add(new ReturnRequest
+                {
+                    Id = i,
+                    OrderId = $"LWS-{20500 + (i % 250)}",
+                    UserId = $"user-{((i - 1) % 49) + 2}",
+                    Reason = $"Seeded return scenario {i:000}.",
+                    Status = statuses[i % statuses.Length],
+                    RequestedAmount = 499 + ((i * 29) % 2500),
+                    ApprovedAmount = i % 3 == 0 ? 499 + ((i * 29) % 2500) : null,
+                    ResolutionNotes = i % 3 == 0 ? "Seeded resolution note." : string.Empty,
+                    RequestedAtUtc = baseTime.AddDays(i % 14),
+                    UpdatedAtUtc = baseTime.AddDays((i % 14) + 1)
+                });
+            }
+
+            return returns;
         }
 
         private static IEnumerable<SupportCase> BuildSupportCasesSeed()
         {
             var baseTime = new DateTime(2026, 4, 13, 10, 0, 0, DateTimeKind.Utc);
-            return new List<SupportCase>
+            var cases = new List<SupportCase>
             {
                 new SupportCase
                 {
@@ -487,6 +540,27 @@ namespace LewisStores.Api.Data
                     UpdatedAtUtc = baseTime.AddDays(1)
                 }
             };
+
+            var statuses = new[] { "Open", "InProgress", "WaitingOnCustomer", "Resolved", "Closed" };
+            var priorities = new[] { "Low", "Normal", "High", "Urgent" };
+            for (var i = 4; i <= 150; i++)
+            {
+                cases.Add(new SupportCase
+                {
+                    Id = i,
+                    OrderId = i % 4 == 0 ? null : $"LWS-{20500 + (i % 250)}",
+                    UserId = $"user-{((i - 1) % 49) + 2}",
+                    Subject = $"Seeded support case {i:000}",
+                    Description = $"Auto-generated support scenario for case {i:000}.",
+                    Status = statuses[i % statuses.Length],
+                    Priority = priorities[i % priorities.Length],
+                    AssignedToUserId = i % 3 == 0 ? "user-support-agent" : null,
+                    CreatedAtUtc = baseTime.AddHours(i),
+                    UpdatedAtUtc = baseTime.AddHours(i + 2)
+                });
+            }
+
+            return cases;
         }
     }
 }
