@@ -64,6 +64,18 @@ export function getOrders() {
   return request('/api/Orders')
 }
 
+export function getDeliveries(params = {}) {
+  const search = new URLSearchParams()
+  if (params.status) search.set('status', params.status)
+  if (params.orderId) search.set('orderId', params.orderId)
+  const suffix = search.toString() ? `?${search.toString()}` : ''
+  return request(`/api/Deliveries${suffix}`)
+}
+
+export function getDeliveryByOrderId(orderId) {
+  return request(`/api/Deliveries/${orderId}`)
+}
+
 export function createOrder(payload) {
   return request('/api/Orders', {
     method: 'POST',

@@ -12,7 +12,6 @@ import {
 import {
   checkoutSteps,
   formatCurrency,
-  orderHistory,
   products,
   trackingSteps,
 } from '../data/mockData'
@@ -1211,7 +1210,135 @@ export function OrderHistoryPage() {
 }
 
 export function OrderTrackingPage() {
-  return <OrderHistoryPage />
+  const { isAuthenticated, orders, deliveries, loadOrders, loadDeliveries } = useShop()
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      return
+    }
+
+    Promise.all([loadOrders(), loadDeliveries()]).catch(() => {})
+  }, [isAuthenticated])
+
+  if (!isAuthenticated) {
+    return (
+      <main className="page" style={{ maxWidth: '780px' }}>
+        <Card style={{ textAlign: 'center', padding: '2.5rem' }}>
+          <h1 style={{ color: 'var(--primary)', marginBottom: '0.75rem' }}>Sign in to track deliveries</h1>
+          <p style={{ color: 'var(--on-surface-variant)', marginBottom: '1.5rem' }}>
+            Delivery status is tied to your account.
+          </p>
+          <Button to="/auth" variant="primary" style={{ padding: '0.9rem 2rem' }}>Go to Login / Register</Button>
+        </Card>
+      </main>
+    )
+  }
+
+  const deliveryByOrderId = new Map(deliveries.map((delivery) => [delivery.orderId, delivery]))
+  const activeDeliveries = deliveries.filter((delivery) => !['Delivered', 'Cancelled', 'Refunded'].includes(delivery.status))
+  const latestDelivery = deliveries[0]
+
+  const getStepIndex = (status) => {
+    switch (status) {
+      case 'Delivered':
+        return 3
+      case 'Shipped':
+        return 2
+      case 'Packed':
+      case 'Processing':
+        return 1
+      default:
+        return 0
+    }
+  }
+
+  return (
+    <main className="page" style={{ maxWidth: '1180px' }}>
+      <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: '1rem', marginBottom: '1.5rem', flexWrap: 'wrap' }}>
+        <div>
+          <h1 style={{ color: 'var(--primary)', marginBottom: '0.4rem' }}>Order Tracking</h1>
+          <p style={{ color: 'var(--on-surface-variant)' }}>Monitor shipment progress, ETA, and delivery history.</p>
+        </div>
+        <Badge tone={activeDeliveries.length > 0 ? 'info' : 'success'}>
+          {activeDeliveries.length > 0 ? `${activeDeliveries.length} active delivery${activeDeliveries.length > 1 ? 'ies' : 'y'}` : 'All deliveries complete'}
+        </Badge>
+      </div>
+
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: '1.25rem', marginBottom: '1.5rem' }}>
+        <Card>
+          <p className="form-label" style={{ marginBottom: '0.75rem' }}>Tracked Orders</p>
+          <span style={{ fontSize: '2.2rem', fontWeight: 700, color: 'var(--primary)' }}>{orders.length}</span>
+        </Card>
+        <Card>
+          <p className="form-label" style={{ marginBottom: '0.75rem' }}>Active Deliveries</p>
+          <span style={{ fontSize: '2.2rem', fontWeight: 700, color: 'var(--primary)' }}>{activeDeliveries.length}</span>
+        </Card>
+        <Card>
+          <p className="form-label" style={{ marginBottom: '0.75rem' }}>Latest Update</p>
+          <p style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--primary)', marginBottom: '0.25rem' }}>
+            {latestDelivery ? `${latestDelivery.status} - ${latestDelivery.orderId}` : 'No delivery records yet'}
+          </p>
+          <p style={{ fontSize: '0.82rem', color: 'var(--on-surface-variant)' }}>
+            {latestDelivery ? latestDelivery.currentLocation : 'Place an order to create a delivery record.'}
+          </p>
+        </Card>
+      </div>
+
+      <div className="stack-md">
+        {deliveries.length === 0 ? (
+          <Card style={{ textAlign: 'center', padding: '2.5rem' }}>
+            <h2 style={{ color: 'var(--primary)', marginBottom: '0.75rem' }}>No active deliveries</h2>
+            <p style={{ color: 'var(--on-surface-variant)' }}>When an order is placed, a delivery record will appear here.</p>
+          </Card>
+        ) : (
+          deliveries.map((delivery) => {
+            const order = deliveryByOrderId.get(delivery.orderId) || orders.find((item) => item.id === delivery.orderId)
+            const currentStep = getStepIndex(delivery.status)
+
+            return (
+              <Card key={delivery.id} style={{ padding: '1.5rem' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap', marginBottom: '1rem' }}>
+                  <div>
+                    <h3 style={{ marginBottom: '0.35rem', color: 'var(--primary)' }}>#{delivery.orderId}</h3>
+                    <p style={{ color: 'var(--on-surface-variant)', fontSize: '0.9rem' }}>
+                      {order?.items || 'Order details unavailable'}
+                    </p>
+                  </div>
+                  <Badge tone={delivery.status === 'Delivered' ? 'success' : delivery.status === 'Shipped' ? 'info' : 'warning'}>{delivery.status}</Badge>
+                </div>
+
+                <Stepper steps={trackingSteps.map((step) => step.label)} current={currentStep} />
+
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: '1rem' }}>
+                  <div>
+                    <p className="form-label" style={{ marginBottom: '0.35rem' }}>Carrier</p>
+                    <p style={{ color: 'var(--on-surface)' }}>{delivery.carrier}</p>
+                  </div>
+                  <div>
+                    <p className="form-label" style={{ marginBottom: '0.35rem' }}>Tracking Number</p>
+                    <p style={{ color: 'var(--on-surface)' }}>{delivery.trackingNumber}</p>
+                  </div>
+                  <div>
+                    <p className="form-label" style={{ marginBottom: '0.35rem' }}>Destination</p>
+                    <p style={{ color: 'var(--on-surface)' }}>{delivery.destination}</p>
+                  </div>
+                  <div>
+                    <p className="form-label" style={{ marginBottom: '0.35rem' }}>ETA</p>
+                    <p style={{ color: 'var(--on-surface)' }}>{new Date(delivery.estimatedDeliveryAtUtc).toLocaleDateString()}</p>
+                  </div>
+                </div>
+
+                <div style={{ marginTop: '1rem', display: 'flex', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap', color: 'var(--on-surface-variant)', fontSize: '0.88rem' }}>
+                  <span>Current location: {delivery.currentLocation}</span>
+                  <span>Updated: {new Date(delivery.updatedAtUtc).toLocaleString()}</span>
+                </div>
+              </Card>
+            )
+          })
+        )}
+      </div>
+    </main>
+  )
 }
 
 export function QaLabPage() {

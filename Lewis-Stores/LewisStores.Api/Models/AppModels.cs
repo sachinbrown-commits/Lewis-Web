@@ -173,6 +173,77 @@ namespace LewisStores.Api.Models
     }
 
     /// <summary>
+    /// Delivery and shipping status tied to a customer order.
+    /// </summary>
+    public class Delivery
+    {
+        /// <summary>
+        /// Numeric primary key.
+        /// </summary>
+        public int Id { get; set; }
+
+        /// <summary>
+        /// Associated order identifier.
+        /// </summary>
+        public string OrderId { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Customer/user identifier.
+        /// </summary>
+        public string UserId { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Current delivery status.
+        /// </summary>
+        public string Status { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Carrier responsible for the shipment.
+        /// </summary>
+        public string Carrier { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Tracking number exposed to the customer.
+        /// </summary>
+        public string TrackingNumber { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Dispatch hub or origin location.
+        /// </summary>
+        public string Origin { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Delivery destination address or region.
+        /// </summary>
+        public string Destination { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Latest known delivery location.
+        /// </summary>
+        public string CurrentLocation { get; set; } = string.Empty;
+
+        /// <summary>
+        /// UTC timestamp when the order left the warehouse, if applicable.
+        /// </summary>
+        public DateTime? ShippedAtUtc { get; set; }
+
+        /// <summary>
+        /// Estimated delivery date and time in UTC.
+        /// </summary>
+        public DateTime EstimatedDeliveryAtUtc { get; set; }
+
+        /// <summary>
+        /// UTC timestamp when the shipment was completed, if applicable.
+        /// </summary>
+        public DateTime? DeliveredAtUtc { get; set; }
+
+        /// <summary>
+        /// UTC timestamp for the most recent status update.
+        /// </summary>
+        public DateTime UpdatedAtUtc { get; set; }
+    }
+
+    /// <summary>
     /// Application user model used for mock authentication.
     /// </summary>
     public class User

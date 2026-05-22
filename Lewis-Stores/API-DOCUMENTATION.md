@@ -390,6 +390,48 @@ Content-Type: application/json
 
 ---
 
+## Delivery Endpoints
+
+### GET /api/Deliveries
+Get deliveries for the authenticated user. Staff roles can view all deliveries.
+
+**Headers**:
+```
+Authorization: Bearer <TOKEN>
+```
+
+**Query Parameters**:
+- `status` (optional): Filter deliveries by status, such as Processing, Shipped, or Delivered
+- `orderId` (optional): Return the delivery for a specific order
+
+**Response** (200):
+```json
+[
+  {
+    "id": 1,
+    "orderId": "LWS-20419",
+    "userId": "user-test-customer",
+    "status": "Delivered",
+    "carrier": "Lewis Logistics",
+    "trackingNumber": "LL-20419",
+    "origin": "Johannesburg Distribution Centre",
+    "destination": "123 Test Street, Johannesburg, 2000",
+    "currentLocation": "Delivered to recipient",
+    "shippedAtUtc": "2026-04-08T08:00:00Z",
+    "estimatedDeliveryAtUtc": "2026-04-12T15:00:00Z",
+    "deliveredAtUtc": "2026-04-12T15:35:00Z",
+    "updatedAtUtc": "2026-04-12T15:35:00Z"
+  }
+]
+```
+
+**Test Cases**:
+- T-API-DEL-001: Get delivery list for current user
+- T-API-DEL-002: Filter deliveries by status
+- T-API-DEL-003: Track a specific order by orderId
+
+---
+
 ## Payment Method Endpoints
 
 ### GET /api/PaymentMethods

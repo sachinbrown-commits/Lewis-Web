@@ -7,6 +7,7 @@ import {
   createDefectReport,
   createReturn,
   createOrder,
+  getDeliveries,
   createSupportCase,
   getDefectReports,
   getCurrentUser,
@@ -74,6 +75,7 @@ export function ShopProvider({ children }) {
   });
   const [authToken, setAuthToken] = useState(localStorage.getItem('ls_token') || '');
   const [orders, setOrders] = useState([]);
+  const [deliveries, setDeliveries] = useState([]);
   const [paymentMethods, setPaymentMethods] = useState([]);
   const [returnRequests, setReturnRequests] = useState([]);
   const [supportCases, setSupportCases] = useState([]);
@@ -163,6 +165,7 @@ export function ShopProvider({ children }) {
     setAuthToken('');
     setCurrentUser(null);
     setOrders([]);
+    setDeliveries([]);
     setPaymentMethods([]);
     localStorage.removeItem('ls_token');
     localStorage.removeItem('ls_user');
@@ -192,6 +195,17 @@ export function ShopProvider({ children }) {
     }
     const data = await getOrders();
     setOrders(data || []);
+    return data || [];
+  };
+
+  const loadDeliveries = async (params = {}) => {
+    if (!localStorage.getItem('ls_token')) {
+      setDeliveries([]);
+      return [];
+    }
+
+    const data = await getDeliveries(params);
+    setDeliveries(data || []);
     return data || [];
   };
 
@@ -428,6 +442,7 @@ export function ShopProvider({ children }) {
       logoutUser();
     });
     loadOrders().catch(() => {});
+    loadDeliveries().catch(() => {});
     loadPaymentMethods().catch(() => {});
     loadReturnRequests().catch(() => {});
     loadSupportCases().catch(() => {});
@@ -496,6 +511,8 @@ export function ShopProvider({ children }) {
       updateProfile,
       orders,
       loadOrders,
+      deliveries,
+      loadDeliveries,
       placeOrder,
       paymentMethods,
       loadPaymentMethods,

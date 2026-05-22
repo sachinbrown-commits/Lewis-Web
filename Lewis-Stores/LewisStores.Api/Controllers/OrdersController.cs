@@ -92,6 +92,25 @@ namespace LewisStores.Api.Controllers
             _context.Orders.Add(order);
             await _context.SaveChangesAsync();
 
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+            var now = DateTime.UtcNow;
+            _context.Deliveries.Add(new Delivery
+            {
+                OrderId = order.Id,
+                UserId = userId,
+                Status = "Processing",
+                Carrier = "Lewis Logistics",
+                TrackingNumber = $"LL-{order.Id}",
+                Origin = "Johannesburg Distribution Centre",
+                Destination = user?.Address?.Trim() ?? string.Empty,
+                CurrentLocation = "Order received at the dispatch hub",
+                ShippedAtUtc = null,
+                EstimatedDeliveryAtUtc = now.AddDays(5),
+                DeliveredAtUtc = null,
+                UpdatedAtUtc = now
+            });
+            await _context.SaveChangesAsync();
+
             var verboseAudit = await _context.QaFeatureFlags
                 .Where(f => f.Key == "audit_verbose_events")
                 .Select(f => f.IsEnabled)
