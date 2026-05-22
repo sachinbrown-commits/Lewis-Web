@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("LewisStores.Api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+44ab3ca6b0aea929b2140196851712d8221ffab2")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3a685d4873150e7f5891751e7ffdb81a8a404417")]
 [assembly: System.Reflection.AssemblyProductAttribute("LewisStores.Api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("LewisStores.Api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

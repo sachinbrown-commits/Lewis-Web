@@ -492,7 +492,7 @@ namespace LewisStores.Api.Data
                     orderDate,
                     estimatedDelivery,
                     orderStatus is "Shipped" or "Delivered" ? orderDate.AddDays(1) : null,
-                    orderStatus == "Delivered" ? orderDate.AddDays(5) : null));
+                        orderStatus == "Delivered" ? orderDate.AddDays(5) : orderDate.AddDays(1)));
             }
 
             return deliveries;
