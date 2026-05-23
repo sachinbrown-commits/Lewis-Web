@@ -41,8 +41,8 @@ SELECT
     COUNT(*) as [RecordCount]
 FROM Orders o
 LEFT JOIN Users u ON o.UserId = u.Id
+WHERE o.UserId IS NOT NULL AND u.Id IS NULL
 GROUP BY o.Id, o.UserId, u.Email
-HAVING o.UserId IS NOT NULL AND u.Id IS NULL
 ORDER BY o.Id;
 GO
 
@@ -55,7 +55,7 @@ SELECT
 FROM PaymentMethods pm
 LEFT JOIN Users u ON pm.UserId = u.Id
 WHERE u.Id IS NULL
-GROUP BY pm.Id, pm.UserId;
+GROUP BY pm.Id, pm.UserId, u.Email;
 GO
 
 -- T-DB-INT-005: Verify Support Cases reference valid Users
@@ -165,7 +165,7 @@ GO
 SELECT 
     Status as [ReturnStatus],
     COUNT(*) as [ReturnCount],
-    SUM(RequestedAmount) as [TotalRequestedAmount],
+    SUM(ISNULL(RequestedAmount, 0)) as [TotalRequestedAmount],
     SUM(ISNULL(ApprovedAmount, 0)) as [TotalApprovedAmount]
 FROM ReturnRequests
 GROUP BY Status
@@ -177,17 +177,32 @@ SELECT
     u.Id as [UserId],
     u.Email,
     u.FullName,
-    COUNT(DISTINCT o.Id) as [OrderCount],
-    SUM(o.Total) as [TotalSpent],
-    COUNT(DISTINCT pm.Id) as [PaymentMethodCount],
-    COUNT(DISTINCT sc.Id) as [SupportCaseCount],
-    COUNT(DISTINCT cr.Id) as [CreditApplicationCount]
+    (
+        SELECT COUNT(*)
+        FROM Orders o
+        WHERE o.UserId = u.Id
+    ) as [OrderCount],
+    (
+        SELECT COALESCE(SUM(ISNULL(o.Total, 0)), 0)
+        FROM Orders o
+        WHERE o.UserId = u.Id
+    ) as [TotalSpent],
+    (
+        SELECT COUNT(*)
+        FROM PaymentMethods pm
+        WHERE pm.UserId = u.Id
+    ) as [PaymentMethodCount],
+    (
+        SELECT COUNT(*)
+        FROM SupportCases sc
+        WHERE sc.UserId = u.Id
+    ) as [SupportCaseCount],
+    (
+        SELECT COUNT(*)
+        FROM CreditApplications cr
+        WHERE cr.UserId = u.Id
+    ) as [CreditApplicationCount]
 FROM Users u
-LEFT JOIN Orders o ON u.Id = o.UserId
-LEFT JOIN PaymentMethods pm ON u.Id = pm.UserId
-LEFT JOIN SupportCases sc ON u.Id = sc.UserId
-LEFT JOIN CreditApplications cr ON u.Id = cr.UserId
-GROUP BY u.Id, u.Email, u.FullName
 ORDER BY [TotalSpent] DESC;
 GO
 
@@ -195,8 +210,8 @@ GO
 SELECT 
     Status as [ApplicationStatus],
     COUNT(*) as [ApplicationCount],
-    AVG(MonthlyIncome) as [AvgMonthlyIncome],
-    AVG(MonthlyExpenses) as [AvgMonthlyExpenses]
+    AVG(ISNULL(MonthlyIncome, 0)) as [AvgMonthlyIncome],
+    AVG(ISNULL(MonthlyExpenses, 0)) as [AvgMonthlyExpenses]
 FROM CreditApplications
 GROUP BY Status
 ORDER BY [ApplicationCount] DESC;
@@ -204,13 +219,21 @@ GO
 
 -- T-DB-INT-015: Audit Log Event Summary
 SELECT 
-    EventType as [AuditEventType],
+    a.EventType as [AuditEventType],
     COUNT(*) as [EventCount],
-    MIN(TimestampUtc) as [EarliestEvent],
-    MAX(TimestampUtc) as [LatestEvent],
-    COUNT(DISTINCT UserId) as [UniqueUsers]
-FROM AuditLogs
-GROUP BY EventType
+    MIN(a.TimestampUtc) as [EarliestEvent],
+    MAX(a.TimestampUtc) as [LatestEvent],
+    (
+        SELECT COUNT(*)
+        FROM (
+            SELECT DISTINCT a2.UserId
+            FROM AuditLogs a2
+            WHERE a2.EventType = a.EventType
+                AND a2.UserId IS NOT NULL
+        ) distinct_users
+    ) as [UniqueUsers]
+FROM AuditLogs a
+GROUP BY a.EventType
 ORDER BY [EventCount] DESC;
 GO
 
@@ -245,8 +268,8 @@ SELECT
     MissionKey,
     Status as [ReportStatus],
     COUNT(*) as [ReportCount],
-    AVG(CAST(Score AS FLOAT)) as [AvgScore],
-    COUNT(CASE WHEN InstructorFeedback IS NOT NULL THEN 1 END) as [ReviewedCount]
+    AVG(CAST(ISNULL(Score, 0) AS FLOAT)) as [AvgScore],
+    SUM(CASE WHEN InstructorFeedback IS NOT NULL THEN 1 ELSE 0 END) as [ReviewedCount]
 FROM DefectReports
 GROUP BY MissionKey, Status
 ORDER BY MissionKey, Status;
@@ -258,8 +281,8 @@ SELECT
     PersonaKey,
     Status as [ProgressStatus],
     COUNT(*) as [StudentCount],
-    AVG(CAST(Score AS FLOAT)) as [AvgScore],
-    COUNT(CASE WHEN CompletedAtUtc IS NOT NULL THEN 1 END) as [CompletedCount]
+    AVG(CAST(ISNULL(Score, 0) AS FLOAT)) as [AvgScore],
+    SUM(CASE WHEN CompletedAtUtc IS NOT NULL THEN 1 ELSE 0 END) as [CompletedCount]
 FROM MissionProgresses
 GROUP BY MissionKey, PersonaKey, Status
 ORDER BY MissionKey, PersonaKey, Status;
@@ -267,16 +290,16 @@ GO
 
 -- T-DB-INT-020: Data Freshness Check
 SELECT 
-    'Categories' as [TableName], MAX(CAST(1 AS DATETIME2)) as [LastUpdate]
+    'Categories' as [TableName], CAST(NULL AS DATETIME2) as [LastUpdate]
 FROM Categories
 UNION ALL
-SELECT 'Products', MAX(CAST(1 AS DATETIME2))
+SELECT 'Products', CAST(NULL AS DATETIME2)
 FROM Products
 UNION ALL
 SELECT 'Orders', MAX(UpdatedAtUtc)
 FROM Orders
 UNION ALL
-SELECT 'Users', MAX(CAST(1 AS DATETIME2))
+SELECT 'Users', CAST(NULL AS DATETIME2)
 FROM Users
 UNION ALL
 SELECT 'AuditLogs', MAX(TimestampUtc)
