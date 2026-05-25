@@ -14,6 +14,7 @@ DELETE FROM [SupportCases];
 DELETE FROM [ReturnRequests];
 DELETE FROM [CreditApplications];
 DELETE FROM [PaymentMethods];
+DELETE FROM [Deliveries];
 DELETE FROM [Orders];
 DELETE FROM [CartItems];
 DELETE FROM [Products];
@@ -92,6 +93,15 @@ INSERT INTO [Orders] ([Id], [Date], [Status], [Total], [UserId], [Items], [Creat
 (N'ORD-005-20260508', N'May 8, 2026', N'Cancelled', 12999.00, N'user-005', N'Executive Office Chair x1', DATEADD(DAY, -4, GETUTCDATE()), DATEADD(DAY, -4, GETUTCDATE()));
 GO
 
+-- Seed Deliveries
+INSERT INTO [Deliveries] ([OrderId], [UserId], [Status], [Carrier], [TrackingNumber], [Origin], [Destination], [CurrentLocation], [ShippedAtUtc], [EstimatedDeliveryAtUtc], [DeliveredAtUtc], [UpdatedAtUtc]) VALUES
+(N'ORD-001-20260512', N'user-001', N'Processing', N'Lewis Logistics', N'LL-ORD-001-20260512', N'Johannesburg Distribution Centre', N'123 Main St, City, State 12345', N'Queued for packing', NULL, DATEADD(DAY, 4, GETUTCDATE()), NULL, GETUTCDATE()),
+(N'ORD-002-20260511', N'user-002', N'Shipped', N'Lewis Logistics', N'LL-ORD-002-20260511', N'Johannesburg Distribution Centre', N'456 Oak Avenue, Town, State 54321', N'In transit between regional hubs', DATEADD(DAY, -1, GETUTCDATE()), DATEADD(DAY, 2, GETUTCDATE()), NULL, DATEADD(HOUR, -6, GETUTCDATE())),
+(N'ORD-003-20260510', N'user-003', N'Delivered', N'Lewis Logistics', N'LL-ORD-003-20260510', N'Johannesburg Distribution Centre', N'789 Pine Road, Village, State 99887', N'Delivered to recipient', DATEADD(DAY, -2, GETUTCDATE()), DATEADD(DAY, -1, GETUTCDATE()), DATEADD(HOUR, -20, GETUTCDATE()), DATEADD(HOUR, -20, GETUTCDATE())),
+(N'ORD-004-20260509', N'user-004', N'Processing', N'Lewis Logistics', N'LL-ORD-004-20260509', N'Johannesburg Distribution Centre', N'321 Elm Street, Borough, State 45678', N'Order received at dispatch hub', NULL, DATEADD(DAY, 3, GETUTCDATE()), NULL, DATEADD(HOUR, -2, GETUTCDATE())),
+(N'ORD-005-20260508', N'user-005', N'Cancelled', N'Lewis Logistics', N'LL-ORD-005-20260508', N'Johannesburg Distribution Centre', N'654 Maple Drive, Town, State 78901', N'Shipment cancelled', NULL, DATEADD(DAY, 1, GETUTCDATE()), NULL, DATEADD(DAY, -3, GETUTCDATE()));
+GO
+
 -- Seed Credit Applications
 INSERT INTO [CreditApplications] ([UserId], [Status], [ApplicationDate], [IdNumber], [EmploymentStatus], [MonthlyIncome], [MonthlyExpenses]) VALUES
 (N'user-001', N'Approved', GETUTCDATE(), N'ID-001-12345', N'Employed', 5000.00, 2000.00),
@@ -149,6 +159,7 @@ PRINT 'Seed data inserted successfully!';
 PRINT 'Users created: 7 (5 customers, 1 support agent, 1 admin)';
 PRINT 'Products created: 12';
 PRINT 'Orders created: 5';
+PRINT 'Deliveries created: 5';
 PRINT 'Payment methods: 5';
 PRINT 'Support cases: 3';
 PRINT 'Defect reports: 2';

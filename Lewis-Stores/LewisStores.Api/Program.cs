@@ -205,6 +205,8 @@ using (var scope = app.Services.CreateScope())
             System.Console.WriteLine("Database already exists. Schema verified.");
         }
 
+        EnsureCompatibilitySchema(db);
+
         System.Console.WriteLine("Database initialization completed successfully.");
     }
     catch (Exception ex)
@@ -215,3 +217,36 @@ using (var scope = app.Services.CreateScope())
 }
 
 app.Run();
+
+static void EnsureCompatibilitySchema(AppDbContext db)
+{
+    db.Database.ExecuteSqlRaw(
+        """
+        IF OBJECT_ID(N'[dbo].[Deliveries]', N'U') IS NULL
+        BEGIN
+            CREATE TABLE [dbo].[Deliveries] (
+                [Id] INT IDENTITY(1,1) NOT NULL,
+                [OrderId] NVARCHAR(450) NOT NULL,
+                [UserId] NVARCHAR(450) NOT NULL,
+                [Status] NVARCHAR(50) NOT NULL CONSTRAINT [DF_Deliveries_Status] DEFAULT N'Processing',
+                [Carrier] NVARCHAR(100) NOT NULL,
+                [TrackingNumber] NVARCHAR(100) NOT NULL,
+                [Origin] NVARCHAR(255) NOT NULL,
+                [Destination] NVARCHAR(255) NOT NULL,
+                [CurrentLocation] NVARCHAR(255) NOT NULL,
+                [ShippedAtUtc] DATETIME2 NULL,
+                [EstimatedDeliveryAtUtc] DATETIME2 NOT NULL,
+                [DeliveredAtUtc] DATETIME2 NULL,
+                [UpdatedAtUtc] DATETIME2 NOT NULL CONSTRAINT [DF_Deliveries_UpdatedAtUtc] DEFAULT GETUTCDATE(),
+                CONSTRAINT [PK_Deliveries] PRIMARY KEY ([Id]),
+                CONSTRAINT [FK_Deliveries_Orders] FOREIGN KEY ([OrderId]) REFERENCES [dbo].[Orders]([Id]),
+                CONSTRAINT [FK_Deliveries_Users] FOREIGN KEY ([UserId]) REFERENCES [dbo].[Users]([Id])
+            );
+
+            CREATE INDEX [IX_Deliveries_OrderId] ON [dbo].[Deliveries]([OrderId]);
+            CREATE INDEX [IX_Deliveries_UserId] ON [dbo].[Deliveries]([UserId]);
+            CREATE INDEX [IX_Deliveries_Status] ON [dbo].[Deliveries]([Status]);
+            CREATE INDEX [IX_Deliveries_UpdatedAtUtc] ON [dbo].[Deliveries]([UpdatedAtUtc]);
+        END
+        """);
+}

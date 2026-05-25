@@ -14,6 +14,7 @@ namespace LewisStores.Api.Data
         public DbSet<Category> Categories { get; set; } = null!;
         public DbSet<CartItem> CartItems { get; set; } = null!;
         public DbSet<Order> Orders { get; set; } = null!;
+        public DbSet<Delivery> Deliveries { get; set; } = null!;
         public DbSet<User> Users { get; set; } = null!;
         public DbSet<CreditApplication> CreditApplications { get; set; } = null!;
         public DbSet<PaymentMethod> PaymentMethods { get; set; } = null!;
@@ -30,6 +31,7 @@ namespace LewisStores.Api.Data
 
             modelBuilder.Entity<CartItem>().HasKey(c => c.InternalId);
             modelBuilder.Entity<CreditApplication>().HasKey(c => c.Id);
+            modelBuilder.Entity<Delivery>().HasKey(d => d.Id);
             modelBuilder.Entity<PaymentMethod>().HasKey(p => p.Id);
             modelBuilder.Entity<ReturnRequest>().HasKey(r => r.Id);
             modelBuilder.Entity<SupportCase>().HasKey(s => s.Id);
@@ -56,6 +58,7 @@ namespace LewisStores.Api.Data
 
             modelBuilder.Entity<User>().HasData(BuildUsersSeed());
             modelBuilder.Entity<Order>().HasData(BuildOrdersSeed());
+            modelBuilder.Entity<Delivery>().HasData(BuildDeliveriesSeed());
             modelBuilder.Entity<PaymentMethod>().HasData(BuildPaymentMethodsSeed());
             modelBuilder.Entity<ReturnRequest>().HasData(BuildReturnRequestsSeed());
             modelBuilder.Entity<SupportCase>().HasData(BuildSupportCasesSeed());
@@ -359,6 +362,173 @@ namespace LewisStores.Api.Data
             }
 
             return orders;
+        }
+
+        private static IEnumerable<Delivery> BuildDeliveriesSeed()
+        {
+            var statuses = new[] { "Processing", "Packed", "Shipped", "Delivered", "Cancelled", "Refunded" };
+            var userIds = new[]
+            {
+                "user-test-customer",
+                "user-sarah-johnson",
+                "user-michael-chen",
+                "user-emily-wilson",
+                "user-james-brown",
+                "user-support-agent",
+                "user-admin",
+                "user-2",
+                "user-3",
+                "user-4",
+                "user-5",
+                "user-6",
+                "user-7",
+                "user-8",
+                "user-9",
+                "user-10",
+                "user-11",
+                "user-12",
+                "user-13",
+                "user-14",
+                "user-15",
+                "user-16",
+                "user-17",
+                "user-18",
+                "user-19",
+                "user-20",
+                "user-21",
+                "user-22",
+                "user-23",
+                "user-24",
+                "user-25"
+            };
+
+            var deliveries = new List<Delivery>
+            {
+                CreateDelivery(
+                    1,
+                    "LWS-20419",
+                    "user-test-customer",
+                    "Delivered",
+                    "Lewis Logistics",
+                    "LL-20419",
+                    "Johannesburg Distribution Centre",
+                    "123 Test Street, Johannesburg, 2000",
+                    "Delivered to recipient",
+                    new DateTime(2026, 4, 8, 8, 0, 0, DateTimeKind.Utc),
+                    new DateTime(2026, 4, 12, 15, 0, 0, DateTimeKind.Utc),
+                    new DateTime(2026, 4, 12, 15, 35, 0, DateTimeKind.Utc),
+                    new DateTime(2026, 4, 12, 15, 35, 0, DateTimeKind.Utc)),
+                CreateDelivery(
+                    2,
+                    "LWS-20388",
+                    "user-test-customer",
+                    "Shipped",
+                    "Lewis Logistics",
+                    "LL-20388",
+                    "Johannesburg Distribution Centre",
+                    "123 Test Street, Johannesburg, 2000",
+                    "In transit between regional hubs",
+                    new DateTime(2026, 4, 1, 8, 0, 0, DateTimeKind.Utc),
+                    new DateTime(2026, 4, 5, 9, 0, 0, DateTimeKind.Utc),
+                    null,
+                    new DateTime(2026, 4, 5, 9, 0, 0, DateTimeKind.Utc)),
+                CreateDelivery(
+                    3,
+                    "LWS-20293",
+                    "user-test-customer",
+                    "Processing",
+                    "Lewis Logistics",
+                    "LL-20293",
+                    "Johannesburg Distribution Centre",
+                    "123 Test Street, Johannesburg, 2000",
+                    "Queued for packing",
+                    new DateTime(2026, 3, 22, 8, 0, 0, DateTimeKind.Utc),
+                    new DateTime(2026, 3, 28, 12, 0, 0, DateTimeKind.Utc),
+                    null,
+                    new DateTime(2026, 3, 24, 12, 0, 0, DateTimeKind.Utc)),
+                CreateDelivery(
+                    4,
+                    "LWS-20144",
+                    "user-test-customer",
+                    "Delivered",
+                    "Lewis Logistics",
+                    "LL-20144",
+                    "Johannesburg Distribution Centre",
+                    "123 Test Street, Johannesburg, 2000",
+                    "Delivered to recipient",
+                    new DateTime(2026, 3, 13, 8, 0, 0, DateTimeKind.Utc),
+                    new DateTime(2026, 3, 18, 15, 0, 0, DateTimeKind.Utc),
+                    new DateTime(2026, 3, 18, 14, 10, 0, DateTimeKind.Utc),
+                    new DateTime(2026, 3, 18, 15, 0, 0, DateTimeKind.Utc))
+            };
+
+            for (var i = 20500; i <= 20749; i++)
+            {
+                var userIndex = (i - 20500) % userIds.Length;
+                var orderStatus = statuses[(i - 20500) % statuses.Length];
+                var orderDate = DateTime.UtcNow.Date.AddDays(-((i - 20500) % 75));
+                var estimatedDelivery = orderDate.AddDays(orderStatus == "Delivered" ? 5 : orderStatus == "Shipped" ? 4 : orderStatus == "Packed" ? 6 : 7);
+                var currentLocation = orderStatus switch
+                {
+                    "Delivered" => "Delivered to recipient",
+                    "Shipped" => "In transit between hubs",
+                    "Packed" => "Packed and awaiting collection",
+                    "Processing" => "Queued for packing",
+                    "Cancelled" => "Shipment cancelled before dispatch",
+                    "Refunded" => "Refund processed, no shipment in progress",
+                    _ => "Warehouse dispatch centre"
+                };
+
+                deliveries.Add(CreateDelivery(
+                    i - 20495,
+                    $"LWS-{i}",
+                    userIds[userIndex],
+                    orderStatus,
+                    "Lewis Logistics",
+                    $"LL-{i}",
+                    "Johannesburg Distribution Centre",
+                    $"Delivery address on file for {userIds[userIndex]}",
+                    currentLocation,
+                    orderDate,
+                    estimatedDelivery,
+                    orderStatus is "Shipped" or "Delivered" ? orderDate.AddDays(1) : null,
+                        orderStatus == "Delivered" ? orderDate.AddDays(5) : orderDate.AddDays(1)));
+            }
+
+            return deliveries;
+        }
+
+        private static Delivery CreateDelivery(
+            int id,
+            string orderId,
+            string userId,
+            string status,
+            string carrier,
+            string trackingNumber,
+            string origin,
+            string destination,
+            string currentLocation,
+            DateTime shippedAtUtc,
+            DateTime estimatedDeliveryAtUtc,
+            DateTime? deliveredAtUtc,
+            DateTime updatedAtUtc)
+        {
+            return new Delivery
+            {
+                Id = id,
+                OrderId = orderId,
+                UserId = userId,
+                Status = status,
+                Carrier = carrier,
+                TrackingNumber = trackingNumber,
+                Origin = origin,
+                Destination = destination,
+                CurrentLocation = currentLocation,
+                ShippedAtUtc = status is "Processing" or "Packed" or "Cancelled" or "Refunded" ? null : shippedAtUtc,
+                EstimatedDeliveryAtUtc = estimatedDeliveryAtUtc,
+                DeliveredAtUtc = deliveredAtUtc,
+                UpdatedAtUtc = updatedAtUtc
+            };
         }
 
         private static IEnumerable<PaymentMethod> BuildPaymentMethodsSeed()

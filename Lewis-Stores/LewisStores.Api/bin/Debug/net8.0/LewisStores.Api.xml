@@ -107,6 +107,21 @@
             </summary>
             <param name="application">Credit application payload.</param>
         </member>
+        <member name="T:LewisStores.Api.Controllers.DeliveriesController">
+            <summary>
+            Exposes shipment and delivery tracking details for customer orders.
+            </summary>
+        </member>
+        <member name="M:LewisStores.Api.Controllers.DeliveriesController.GetDeliveries(System.String,System.String)">
+            <summary>
+            Returns deliveries for the authenticated user, or all deliveries for staff roles.
+            </summary>
+        </member>
+        <member name="M:LewisStores.Api.Controllers.DeliveriesController.GetDeliveryByOrderId(System.String)">
+            <summary>
+            Returns a single delivery record by order identifier.
+            </summary>
+        </member>
         <member name="T:LewisStores.Api.Controllers.OrdersController">
             <summary>
             Handles order retrieval and creation endpoints.
@@ -411,6 +426,76 @@
         <member name="P:LewisStores.Api.Models.Order.Items">
             <summary>
             Human-readable order item summary.
+            </summary>
+        </member>
+        <member name="T:LewisStores.Api.Models.Delivery">
+            <summary>
+            Delivery and shipping status tied to a customer order.
+            </summary>
+        </member>
+        <member name="P:LewisStores.Api.Models.Delivery.Id">
+            <summary>
+            Numeric primary key.
+            </summary>
+        </member>
+        <member name="P:LewisStores.Api.Models.Delivery.OrderId">
+            <summary>
+            Associated order identifier.
+            </summary>
+        </member>
+        <member name="P:LewisStores.Api.Models.Delivery.UserId">
+            <summary>
+            Customer/user identifier.
+            </summary>
+        </member>
+        <member name="P:LewisStores.Api.Models.Delivery.Status">
+            <summary>
+            Current delivery status.
+            </summary>
+        </member>
+        <member name="P:LewisStores.Api.Models.Delivery.Carrier">
+            <summary>
+            Carrier responsible for the shipment.
+            </summary>
+        </member>
+        <member name="P:LewisStores.Api.Models.Delivery.TrackingNumber">
+            <summary>
+            Tracking number exposed to the customer.
+            </summary>
+        </member>
+        <member name="P:LewisStores.Api.Models.Delivery.Origin">
+            <summary>
+            Dispatch hub or origin location.
+            </summary>
+        </member>
+        <member name="P:LewisStores.Api.Models.Delivery.Destination">
+            <summary>
+            Delivery destination address or region.
+            </summary>
+        </member>
+        <member name="P:LewisStores.Api.Models.Delivery.CurrentLocation">
+            <summary>
+            Latest known delivery location.
+            </summary>
+        </member>
+        <member name="P:LewisStores.Api.Models.Delivery.ShippedAtUtc">
+            <summary>
+            UTC timestamp when the order left the warehouse, if applicable.
+            </summary>
+        </member>
+        <member name="P:LewisStores.Api.Models.Delivery.EstimatedDeliveryAtUtc">
+            <summary>
+            Estimated delivery date and time in UTC.
+            </summary>
+        </member>
+        <member name="P:LewisStores.Api.Models.Delivery.DeliveredAtUtc">
+            <summary>
+            UTC timestamp when the shipment was completed, if applicable.
+            </summary>
+        </member>
+        <member name="P:LewisStores.Api.Models.Delivery.UpdatedAtUtc">
+            <summary>
+            UTC timestamp for the most recent status update.
             </summary>
         </member>
         <member name="T:LewisStores.Api.Models.User">

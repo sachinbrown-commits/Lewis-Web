@@ -70,6 +70,31 @@ CREATE TABLE [Orders] (
 );
 GO
 
+-- Deliveries Table
+CREATE TABLE [Deliveries] (
+    [Id] INT IDENTITY(1,1) NOT NULL,
+    [OrderId] NVARCHAR(450) NOT NULL,
+    [UserId] NVARCHAR(450) NOT NULL,
+    [Status] NVARCHAR(50) NOT NULL DEFAULT 'Processing',
+    [Carrier] NVARCHAR(100) NOT NULL,
+    [TrackingNumber] NVARCHAR(100) NOT NULL,
+    [Origin] NVARCHAR(255) NOT NULL,
+    [Destination] NVARCHAR(255) NOT NULL,
+    [CurrentLocation] NVARCHAR(255) NOT NULL,
+    [ShippedAtUtc] DATETIME2 NULL,
+    [EstimatedDeliveryAtUtc] DATETIME2 NOT NULL,
+    [DeliveredAtUtc] DATETIME2 NULL,
+    [UpdatedAtUtc] DATETIME2 NOT NULL DEFAULT GETUTCDATE(),
+    CONSTRAINT [PK_Deliveries] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_Deliveries_Orders] FOREIGN KEY ([OrderId]) REFERENCES [Orders]([Id]),
+    CONSTRAINT [FK_Deliveries_Users] FOREIGN KEY ([UserId]) REFERENCES [Users]([Id]),
+    INDEX [IX_Deliveries_OrderId] ([OrderId]),
+    INDEX [IX_Deliveries_UserId] ([UserId]),
+    INDEX [IX_Deliveries_Status] ([Status]),
+    INDEX [IX_Deliveries_UpdatedAtUtc] ([UpdatedAtUtc])
+);
+GO
+
 -- CartItems Table
 CREATE TABLE [CartItems] (
     [InternalId] INT IDENTITY(1,1) NOT NULL,
