@@ -49,6 +49,16 @@ namespace LewisStores.Api.Models
         public string Category { get; set; } = string.Empty;
 
         /// <summary>
+        /// Foreign key to the normalized category row.
+        /// </summary>
+        public string CategoryId { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Navigation to the normalized category entity.
+        /// </summary>
+        public Category? CategoryEntity { get; set; }
+
+        /// <summary>
         /// Public product image URL.
         /// </summary>
         public string Image { get; set; } = string.Empty;
@@ -98,6 +108,11 @@ namespace LewisStores.Api.Models
         /// Visual tone identifier used by the frontend.
         /// </summary>
         public string Tone { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Products assigned to this category.
+        /// </summary>
+        public List<Product> Products { get; set; } = new List<Product>();
     }
 
     /// <summary>

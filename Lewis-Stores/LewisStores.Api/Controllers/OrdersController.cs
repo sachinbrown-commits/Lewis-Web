@@ -52,6 +52,7 @@ namespace LewisStores.Api.Controllers
             var orders = await _context.Orders
                 .Where(o => o.UserId == userId)
                 .Include(o => o.OrderItems)
+                .ThenInclude(oi => oi.Product)
                 .OrderByDescending(o => o.Date)
                 .ToListAsync();
 
@@ -88,45 +89,78 @@ namespace LewisStores.Api.Controllers
                 return BadRequest(new { Message = "Order total must be greater than zero." });
             }
 
+            if (request.ItemsList == null || request.ItemsList.Count == 0)
+            {
+                return BadRequest(new { Message = "Structured order items are required." });
+            }
+
+            var productIds = request.ItemsList
+                .Select(item => item.ProductId)
+                .Where(productId => !string.IsNullOrWhiteSpace(productId))
+                .Distinct()
+                .ToList();
+
+            if (productIds.Count == 0)
+            {
+                return BadRequest(new { Message = "At least one product is required." });
+            }
+
+            var products = await _context.Products
+                .Where(product => productIds.Contains(product.Id))
+                .ToListAsync();
+
+            if (products.Count != productIds.Count)
+            {
+                var missingProductIds = productIds.Except(products.Select(product => product.Id)).ToList();
+                return BadRequest(new
+                {
+                    Message = "One or more products referenced in the order do not exist.",
+                    MissingProductIds = missingProductIds
+                });
+            }
+
+            var productsById = products.ToDictionary(product => product.Id, product => product);
+
             var order = new Order
             {
                 Id = "LWS-" + Random.Shared.Next(10000, 99999),
                 Date = DateTime.UtcNow.ToString("dd MMM yyyy"),
                 Status = "Processing",
                 UserId = userId,
-                Items = request.Items
+                Items = string.Join(" + ", request.ItemsList.Select(item => productsById[item.ProductId].Title))
             };
 
-            // If structured items provided, compute totals and create normalized OrderItems
             var createdOrderItems = new List<OrderItem>();
-            if (request.ItemsList != null && request.ItemsList.Count > 0)
+            foreach (var it in request.ItemsList)
             {
-                foreach (var it in request.ItemsList)
+                if (it.Quantity <= 0)
                 {
-                    var lineTotal = it.UnitPrice * it.Quantity;
-                    createdOrderItems.Add(new OrderItem
-                    {
-                        ProductId = it.ProductId,
-                        Quantity = it.Quantity,
-                        UnitPrice = it.UnitPrice,
-                        LineTotal = lineTotal,
-                        OrderId = order.Id
-                    });
+                    return BadRequest(new { Message = "Order item quantity must be greater than zero." });
                 }
 
-                order.Total = createdOrderItems.Sum(x => x.LineTotal);
-                order.OrderItems = createdOrderItems;
-            }
-            else
-            {
-                order.Total = request.Total;
+                if (it.UnitPrice <= 0)
+                {
+                    return BadRequest(new { Message = "Order item unit price must be greater than zero." });
+                }
+
+                var product = productsById[it.ProductId];
+                var lineTotal = it.UnitPrice * it.Quantity;
+                createdOrderItems.Add(new OrderItem
+                {
+                    ProductId = product.Id,
+                    Quantity = it.Quantity,
+                    UnitPrice = it.UnitPrice,
+                    LineTotal = lineTotal,
+                    OrderId = order.Id,
+                    Product = product
+                });
             }
 
+            order.Total = createdOrderItems.Sum(x => x.LineTotal);
+            order.OrderItems = createdOrderItems;
+
             _context.Orders.Add(order);
-            if (createdOrderItems.Count > 0)
-            {
-                _context.OrderItems.AddRange(createdOrderItems);
-            }
+            _context.OrderItems.AddRange(createdOrderItems);
 
             await _context.SaveChangesAsync();
 
@@ -167,7 +201,13 @@ namespace LewisStores.Api.Controllers
                 await _context.SaveChangesAsync();
             }
 
-            return CreatedAtAction(nameof(GetOrders), new { id = order.Id }, order);
+            var createdOrder = await _context.Orders
+                .Where(o => o.Id == order.Id)
+                .Include(o => o.OrderItems)
+                .ThenInclude(oi => oi.Product)
+                .FirstAsync();
+
+            return CreatedAtAction(nameof(GetOrders), new { id = order.Id }, createdOrder);
         }
     }
 }

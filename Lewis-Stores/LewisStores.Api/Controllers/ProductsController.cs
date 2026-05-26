@@ -85,6 +85,19 @@ namespace LewisStores.Api.Controllers
                 return BadRequest(new { Message = "StockQuantity cannot be negative." });
             }
 
+            var categoryName = request.Category.Trim();
+            var category = await _context.Categories
+                .FirstOrDefaultAsync(c => c.Name == categoryName);
+
+            if (category == null)
+            {
+                return BadRequest(new
+                {
+                    Message = $"Category '{categoryName}' does not exist.",
+                    AllowedCategories = await _context.Categories.Select(c => c.Name).OrderBy(name => name).ToListAsync()
+                });
+            }
+
             var categoryCode = new string(request.Category
                 .Trim()
                 .Where(char.IsLetterOrDigit)
@@ -113,7 +126,8 @@ namespace LewisStores.Api.Controllers
                 OldPrice = request.OldPrice,
                 Tag = string.IsNullOrWhiteSpace(request.Tag) ? null : request.Tag.Trim(),
                 Rating = request.Rating ?? 0,
-                Category = request.Category.Trim(),
+                Category = category.Name,
+                CategoryId = category.Id,
                 Image = request.Image.Trim(),
                 Sku = sku,
                 StockQuantity = request.StockQuantity,

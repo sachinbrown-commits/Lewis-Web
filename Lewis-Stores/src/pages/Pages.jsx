@@ -18,6 +18,24 @@ import {
 import { getCategories, getProducts } from '../lib/api'
 import { useShop } from '../context/ShopContext'
 
+function getOrderLineItems(order) {
+  const rawItems = order?.orderItems || order?.OrderItems || []
+
+  return rawItems.map((item) => ({
+    title: item?.product?.title || item?.Product?.title || item?.productTitle || item?.ProductTitle || item?.productId || item?.ProductId || 'Item',
+    quantity: item?.quantity ?? item?.Quantity ?? 1,
+  }))
+}
+
+function getOrderSummaryText(order) {
+  const lineItems = getOrderLineItems(order)
+  if (lineItems.length === 0) {
+    return order?.items || 'No orders yet'
+  }
+
+  return lineItems.map((line) => line.title).join(', ')
+}
+
 /* ─────────────────────────────────────────────
    HOME PAGE
 ────────────────────────────────────────────── */
@@ -757,8 +775,12 @@ export function CheckoutPage() {
       if (Object.keys(e).length === 0) setStep(1)
     } else {
       if (isAuthenticated) {
-        const items = cartItems.map(i => `${i.title} x${i.quantity}`).join(' + ')
-        await placeOrder({ total: cartTotal, items })
+        const itemsList = cartItems.map((item) => ({
+          productId: item.id,
+          quantity: item.quantity,
+          unitPrice: item.price,
+        }))
+        await placeOrder({ total: cartTotal, itemsList })
       }
 
       if (isAuthenticated && form.cardNumber.trim().length >= 12) {
@@ -1165,7 +1187,7 @@ export function OrderHistoryPage() {
           </Card>
           <Card>
             <p className="form-label" style={{ marginBottom: '0.75rem' }}>Latest Order</p>
-            <p style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--primary)', marginBottom: '0.25rem' }}>{latestOrder?.items || 'No orders yet'}</p>
+            <p style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--primary)', marginBottom: '0.25rem' }}>{getOrderSummaryText(latestOrder)}</p>
             <p style={{ fontSize: '0.82rem', color: 'var(--on-surface-variant)' }}>{latestOrder?.date || ''}</p>
           </Card>
         </div>
@@ -1185,7 +1207,18 @@ export function OrderHistoryPage() {
                   <td style={{ padding: '1.1rem 1.25rem', fontWeight: 700, color: 'var(--primary)' }}>#{order.id}</td>
                   <td style={{ padding: '1.1rem 1.25rem', color: 'var(--on-surface-variant)', fontSize: '0.9rem' }}>{order.date}</td>
                   <td style={{ padding: '1.1rem 1.25rem', color: 'var(--on-surface)', fontSize: '0.88rem', maxWidth: '200px' }}>
-                    <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'block' }}>{order.items}</span>
+                    {getOrderLineItems(order).length === 0 ? (
+                      <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'block' }}>{order.items}</span>
+                    ) : (
+                      <div style={{ display: 'grid', gap: '0.4rem' }}>
+                        {getOrderLineItems(order).map((line) => (
+                          <div key={`${order.id}-${line.title}-${line.quantity}`} style={{ display: 'flex', justifyContent: 'space-between', gap: '0.75rem', alignItems: 'center' }}>
+                            <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{line.title}</span>
+                            <span style={{ flexShrink: 0, fontSize: '0.78rem', fontWeight: 700, color: 'var(--on-surface-variant)' }}>Qty {line.quantity}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </td>
                   <td style={{ padding: '1.1rem 1.25rem' }}>
                     <Badge tone={order.status === 'Delivered' ? 'success' : order.status === 'Shipped' ? 'info' : 'warning'}>
@@ -1301,7 +1334,7 @@ export function OrderTrackingPage() {
                   <div>
                     <h3 style={{ marginBottom: '0.35rem', color: 'var(--primary)' }}>#{delivery.orderId}</h3>
                     <p style={{ color: 'var(--on-surface-variant)', fontSize: '0.9rem' }}>
-                      {order?.items || 'Order details unavailable'}
+                      {getOrderSummaryText(order)}
                     </p>
                   </div>
                   <Badge tone={delivery.status === 'Delivered' ? 'success' : delivery.status === 'Shipped' ? 'info' : 'warning'}>{delivery.status}</Badge>

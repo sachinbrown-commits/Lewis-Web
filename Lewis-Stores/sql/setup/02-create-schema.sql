@@ -29,12 +29,15 @@ CREATE TABLE [Products] (
     [Tag] NVARCHAR(100) NULL,
     [Rating] FLOAT NOT NULL DEFAULT 0.0,
     [Category] NVARCHAR(255) NOT NULL,
+    [CategoryId] NVARCHAR(450) NOT NULL,
     [Image] NVARCHAR(MAX) NULL,
     [Sku] NVARCHAR(100) NOT NULL UNIQUE,
     [StockQuantity] INT NOT NULL DEFAULT 0,
     [IsActive] BIT NOT NULL DEFAULT 1,
     CONSTRAINT [PK_Products] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_Products_Categories] FOREIGN KEY ([CategoryId]) REFERENCES [Categories]([Id]),
     INDEX [IX_Products_Category] ([Category]),
+    INDEX [IX_Products_CategoryId] ([CategoryId]),
     INDEX [IX_Products_Sku] ([Sku])
 );
 GO

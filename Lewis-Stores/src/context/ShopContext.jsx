@@ -209,8 +209,8 @@ export function ShopProvider({ children }) {
     return data || [];
   };
 
-  const placeOrder = async ({ total, items }) => {
-    const created = await createOrder({ total, items });
+  const placeOrder = async (payload) => {
+    const created = await createOrder(payload);
     setOrders(prev => [created, ...prev]);
     return created;
   };

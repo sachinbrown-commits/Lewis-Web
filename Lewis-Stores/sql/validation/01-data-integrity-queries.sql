@@ -208,6 +208,34 @@ FROM Users u
 ORDER BY [TotalSpent] DESC;
 GO
 
+-- T-DB-INT-014: Verify Products reference valid Categories
+SELECT
+    p.Id as [ProductId],
+    p.Title,
+    p.Category,
+    p.CategoryId,
+    c.Name as [CategoryName]
+FROM Products p
+LEFT JOIN Categories c ON p.CategoryId = c.Id
+WHERE p.CategoryId IS NULL OR c.Id IS NULL
+ORDER BY p.Id;
+GO
+
+-- T-DB-INT-015: Verify Order Items reference valid Products and carry positive quantities
+SELECT
+    oi.Id as [OrderItemId],
+    oi.OrderId,
+    oi.ProductId,
+    p.Title,
+    oi.Quantity,
+    oi.UnitPrice,
+    oi.LineTotal
+FROM OrderItems oi
+LEFT JOIN Products p ON oi.ProductId = p.Id
+WHERE oi.Quantity <= 0 OR oi.UnitPrice <= 0 OR oi.LineTotal <= 0 OR p.Id IS NULL
+ORDER BY oi.Id;
+GO
+
 -- T-DB-INT-014: Credit Application Status Report
 SELECT 
     Status as [ApplicationStatus],

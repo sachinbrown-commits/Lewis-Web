@@ -34,11 +34,24 @@ namespace LewisStores.Api.Data
             modelBuilder.Entity<CartItem>()
                 .Property(c => c.Price)
                 .HasPrecision(18, 2);
+            modelBuilder.Entity<Product>()
+                .HasOne(p => p.CategoryEntity)
+                .WithMany(c => c.Products)
+                .HasForeignKey(p => p.CategoryId)
+                .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Product>()
+                .Property(p => p.CategoryId)
+                .IsRequired();
             modelBuilder.Entity<OrderItem>().HasKey(oi => oi.Id);
             modelBuilder.Entity<OrderItem>()
                 .HasOne(oi => oi.Order)
                 .WithMany(o => o.OrderItems)
                 .HasForeignKey(oi => oi.OrderId);
+            modelBuilder.Entity<OrderItem>()
+                .HasOne(oi => oi.Product)
+                .WithMany()
+                .HasForeignKey(oi => oi.ProductId)
+                .OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<OrderItem>()
                 .Property(oi => oi.UnitPrice)
                 .HasPrecision(18, 2);
@@ -151,6 +164,15 @@ namespace LewisStores.Api.Data
         private static IEnumerable<Product> BuildProductsSeed()
         {
             var categories = new[] { "Furniture", "Appliances", "Electronics", "Decor", "Bedding", "Office" };
+            var categoryIds = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+            {
+                ["Furniture"] = "cat-1",
+                ["Appliances"] = "cat-2",
+                ["Electronics"] = "cat-3",
+                ["Decor"] = "cat-4",
+                ["Bedding"] = "cat-5",
+                ["Office"] = "cat-6"
+            };
             var tags = new[] { "Best Seller", "On Sale", "New", "Limited Edition", null };
             var products = new List<Product>
             {
@@ -164,6 +186,7 @@ namespace LewisStores.Api.Data
                     Tag = "Limited Edition",
                     Rating = 4.8,
                     Category = "Furniture",
+                    CategoryId = categoryIds["Furniture"],
                     Image = "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&q=80&w=1200",
                     Sku = "LEW-FUR-0001",
                     StockQuantity = 12,
@@ -178,6 +201,7 @@ namespace LewisStores.Api.Data
                     Tag = "Best Seller",
                     Rating = 4.6,
                     Category = "Furniture",
+                    CategoryId = categoryIds["Furniture"],
                     Image = "https://images.unsplash.com/photo-1501045661006-fcebe0257c3f?auto=format&fit=crop&q=80&w=1200",
                     Sku = "LEW-FUR-0002",
                     StockQuantity = 9,
@@ -191,6 +215,7 @@ namespace LewisStores.Api.Data
                     Price = 7699,
                     Rating = 4.7,
                     Category = "Decor",
+                    CategoryId = categoryIds["Decor"],
                     Image = "https://images.unsplash.com/photo-1616627452582-9ff3d36ad306?auto=format&fit=crop&q=80&w=1200",
                     Sku = "LEW-DCR-0001",
                     StockQuantity = 5,
@@ -204,6 +229,7 @@ namespace LewisStores.Api.Data
                     Price = 8999,
                     Rating = 4.5,
                     Category = "Decor",
+                    CategoryId = categoryIds["Decor"],
                     Image = "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&q=80&w=1200",
                     Sku = "LEW-DCR-0002",
                     StockQuantity = 6,
@@ -232,6 +258,7 @@ namespace LewisStores.Api.Data
                     Tag = tag,
                     Rating = Math.Round(rating > 5 ? 5 : rating, 1),
                     Category = category,
+                    CategoryId = categoryIds[category],
                     Image = $"https://picsum.photos/seed/lewis-{i:0000}/900/600",
                     Sku = $"LEW-{category[..3].ToUpperInvariant()}-{i:0000}",
                     StockQuantity = stock,

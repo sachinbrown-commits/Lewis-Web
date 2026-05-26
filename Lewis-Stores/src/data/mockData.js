@@ -235,8 +235,8 @@ export const products = [
 export const cartItems = []
 
 export const orderHistory = [
-  { id: 'LWS-20419', date: '08 Apr 2026', status: 'Delivered', total: 11799, items: 'Samsung 65" 4K Smart TV + LG Soundbar' },
-  { id: 'LWS-20388', date: '01 Apr 2026', status: 'Shipped', total: 24999, items: 'Luca 3-Seater Sofa + Miren Coffee Table' },
+  { id: 'LWS-20419', date: '08 Apr 2026', status: 'Delivered', total: 11799, items: 'Samsung 65" 4K Smart TV, LG Soundbar' },
+  { id: 'LWS-20388', date: '01 Apr 2026', status: 'Shipped', total: 24999, items: 'Luca 3-Seater Sofa, Miren Coffee Table' },
   { id: 'LWS-20293', date: '22 Mar 2026', status: 'Processing', total: 7699, items: 'Defy 8kg Front Loader Washing Machine' },
   { id: 'LWS-20144', date: '13 Mar 2026', status: 'Delivered', total: 19999, items: 'Samsung 580L Double Door Fridge' },
 ]

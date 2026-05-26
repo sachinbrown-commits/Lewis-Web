@@ -248,5 +248,59 @@ static void EnsureCompatibilitySchema(AppDbContext db)
             CREATE INDEX [IX_Deliveries_Status] ON [dbo].[Deliveries]([Status]);
             CREATE INDEX [IX_Deliveries_UpdatedAtUtc] ON [dbo].[Deliveries]([UpdatedAtUtc]);
         END
+
+        IF OBJECT_ID(N'[dbo].[Categories]', N'U') IS NOT NULL AND COL_LENGTH(N'[dbo].[Products]', N'CategoryId') IS NULL
+        BEGIN
+            ALTER TABLE [dbo].[Products] ADD [CategoryId] NVARCHAR(450) NULL;
+        END
+
+        IF OBJECT_ID(N'[dbo].[Categories]', N'U') IS NOT NULL AND COL_LENGTH(N'[dbo].[Products]', N'CategoryId') IS NOT NULL
+        BEGIN
+            ;WITH DistinctCategories AS
+            (
+                SELECT DISTINCT LTRIM(RTRIM([Category])) AS [CategoryName]
+                FROM [dbo].[Products]
+                WHERE [Category] IS NOT NULL AND LTRIM(RTRIM([Category])) <> ''
+            )
+            INSERT INTO [dbo].[Categories] ([Id], [Name], [Description], [To], [Tone])
+            SELECT
+                CONCAT(N'cat-', REPLACE(CONVERT(NVARCHAR(36), NEWID()), N'-', N'')),
+                dc.[CategoryName],
+                N'',
+                N'/products',
+                CONCAT(N'category-', LOWER(REPLACE(REPLACE(dc.[CategoryName], N' ', N'-'), N'&', N'and')))
+            FROM DistinctCategories dc
+            WHERE NOT EXISTS (
+                SELECT 1
+                FROM [dbo].[Categories] c
+                WHERE c.[Name] = dc.[CategoryName]
+            );
+
+            UPDATE p
+            SET p.[CategoryId] = c.[Id]
+            FROM [dbo].[Products] p
+            INNER JOIN [dbo].[Categories] c ON c.[Name] = p.[Category]
+            WHERE p.[CategoryId] IS NULL OR p.[CategoryId] <> c.[Id];
+
+            IF EXISTS (SELECT 1 FROM [dbo].[Products] WHERE [CategoryId] IS NULL)
+            BEGIN
+                THROW 51000, 'Unable to backfill product categories because one or more products do not match a category row.', 1;
+            END
+
+            IF EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID(N'[dbo].[Products]') AND name = N'CategoryId' AND is_nullable = 1)
+            BEGIN
+                ALTER TABLE [dbo].[Products] ALTER COLUMN [CategoryId] NVARCHAR(450) NOT NULL;
+            END
+
+            IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'IX_Products_CategoryId' AND object_id = OBJECT_ID(N'[dbo].[Products]'))
+            BEGIN
+                CREATE INDEX [IX_Products_CategoryId] ON [dbo].[Products]([CategoryId]);
+            END
+
+            IF NOT EXISTS (SELECT 1 FROM sys.foreign_keys WHERE name = N'FK_Products_Categories')
+            BEGIN
+                ALTER TABLE [dbo].[Products] WITH CHECK ADD CONSTRAINT [FK_Products_Categories] FOREIGN KEY ([CategoryId]) REFERENCES [dbo].[Categories]([Id]);
+            END
+        END
         """);
 }

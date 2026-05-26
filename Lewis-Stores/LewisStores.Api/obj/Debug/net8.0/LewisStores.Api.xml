@@ -320,6 +320,16 @@
             Product category used for filtering and merchandising.
             </summary>
         </member>
+        <member name="P:LewisStores.Api.Models.Product.CategoryId">
+            <summary>
+            Foreign key to the normalized category row.
+            </summary>
+        </member>
+        <member name="P:LewisStores.Api.Models.Product.CategoryEntity">
+            <summary>
+            Navigation to the normalized category entity.
+            </summary>
+        </member>
         <member name="P:LewisStores.Api.Models.Product.Image">
             <summary>
             Public product image URL.
@@ -368,6 +378,11 @@
         <member name="P:LewisStores.Api.Models.Category.Tone">
             <summary>
             Visual tone identifier used by the frontend.
+            </summary>
+        </member>
+        <member name="P:LewisStores.Api.Models.Category.Products">
+            <summary>
+            Products assigned to this category.
             </summary>
         </member>
         <member name="T:LewisStores.Api.Models.CartItem">
