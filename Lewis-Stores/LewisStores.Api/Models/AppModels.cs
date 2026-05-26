@@ -170,6 +170,56 @@ namespace LewisStores.Api.Models
         /// Human-readable order item summary.
         /// </summary>
         public string Items { get; set; } = string.Empty;
+        /// <summary>
+        /// Normalized order line items (preferred for DB joins and validation).
+        /// </summary>
+        public List<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
+    }
+
+    /// <summary>
+    /// Normalized order line item linking orders to products and quantities.
+    /// </summary>
+    public class OrderItem
+    {
+        /// <summary>
+        /// Numeric primary key for the line item.
+        /// </summary>
+        public int Id { get; set; }
+
+        /// <summary>
+        /// Associated order identifier.
+        /// </summary>
+        public string OrderId { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Product identifier for the line.
+        /// </summary>
+        public string ProductId { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Number of units ordered.
+        /// </summary>
+        public int Quantity { get; set; }
+
+        /// <summary>
+        /// Unit price at time of order (in cents/units matching Product.Price scale).
+        /// </summary>
+        public decimal UnitPrice { get; set; }
+
+        /// <summary>
+        /// Line total = Quantity * UnitPrice.
+        /// </summary>
+        public decimal LineTotal { get; set; }
+
+        /// <summary>
+        /// Navigation property to Order (optional for seeding and queries).
+        /// </summary>
+        public Order? Order { get; set; }
+
+        /// <summary>
+        /// Navigation property to Product (optional for queries).
+        /// </summary>
+        public Product? Product { get; set; }
     }
 
     /// <summary>

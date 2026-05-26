@@ -15,6 +15,7 @@ DELETE FROM [ReturnRequests];
 DELETE FROM [CreditApplications];
 DELETE FROM [PaymentMethods];
 DELETE FROM [Deliveries];
+DELETE FROM [OrderItems];
 DELETE FROM [Orders];
 DELETE FROM [CartItems];
 DELETE FROM [Products];
@@ -91,6 +92,16 @@ INSERT INTO [Orders] ([Id], [Date], [Status], [Total], [UserId], [Items], [Creat
 (N'ORD-003-20260510', N'May 10, 2026', N'Delivered', 22999.00, N'user-003', N'CloudRest Memory Foam Mattress x1', DATEADD(DAY, -2, GETUTCDATE()), DATEADD(DAY, -2, GETUTCDATE())),
 (N'ORD-004-20260509', N'May 9, 2026', N'Pending', 19999.00, N'user-004', N'Ergonomic Standing Desk x1', DATEADD(DAY, -3, GETUTCDATE()), DATEADD(DAY, -3, GETUTCDATE())),
 (N'ORD-005-20260508', N'May 8, 2026', N'Cancelled', 12999.00, N'user-005', N'Executive Office Chair x1', DATEADD(DAY, -4, GETUTCDATE()), DATEADD(DAY, -4, GETUTCDATE()));
+GO
+
+-- Seed Order Items
+INSERT INTO [OrderItems] ([OrderId], [ProductId], [Quantity], [UnitPrice], [LineTotal]) VALUES
+(N'ORD-001-20260512', N'luca-modular', 1, 24999.00, 24999.00),
+(N'ORD-001-20260512', N'miren-table', 1, 7699.00, 7699.00),
+(N'ORD-002-20260511', N'aurora-speaker', 1, 8999.00, 8999.00),
+(N'ORD-003-20260510', N'cloudrest-mattress', 1, 22999.00, 22999.00),
+(N'ORD-004-20260509', N'ergonomic-desk', 1, 19999.00, 19999.00),
+(N'ORD-005-20260508', N'office-chair', 1, 12999.00, 12999.00);
 GO
 
 -- Seed Deliveries

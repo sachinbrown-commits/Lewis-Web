@@ -14,6 +14,7 @@ namespace LewisStores.Api.Data
         public DbSet<Category> Categories { get; set; } = null!;
         public DbSet<CartItem> CartItems { get; set; } = null!;
         public DbSet<Order> Orders { get; set; } = null!;
+        public DbSet<OrderItem> OrderItems { get; set; } = null!;
         public DbSet<Delivery> Deliveries { get; set; } = null!;
         public DbSet<User> Users { get; set; } = null!;
         public DbSet<CreditApplication> CreditApplications { get; set; } = null!;
@@ -30,15 +31,51 @@ namespace LewisStores.Api.Data
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<CartItem>().HasKey(c => c.InternalId);
+            modelBuilder.Entity<CartItem>()
+                .Property(c => c.Price)
+                .HasPrecision(18, 2);
+            modelBuilder.Entity<OrderItem>().HasKey(oi => oi.Id);
+            modelBuilder.Entity<OrderItem>()
+                .HasOne(oi => oi.Order)
+                .WithMany(o => o.OrderItems)
+                .HasForeignKey(oi => oi.OrderId);
+            modelBuilder.Entity<OrderItem>()
+                .Property(oi => oi.UnitPrice)
+                .HasPrecision(18, 2);
+            modelBuilder.Entity<OrderItem>()
+                .Property(oi => oi.LineTotal)
+                .HasPrecision(18, 2);
             modelBuilder.Entity<CreditApplication>().HasKey(c => c.Id);
+            modelBuilder.Entity<CreditApplication>()
+                .Property(c => c.MonthlyIncome)
+                .HasPrecision(18, 2);
+            modelBuilder.Entity<CreditApplication>()
+                .Property(c => c.MonthlyExpenses)
+                .HasPrecision(18, 2);
             modelBuilder.Entity<Delivery>().HasKey(d => d.Id);
             modelBuilder.Entity<PaymentMethod>().HasKey(p => p.Id);
             modelBuilder.Entity<ReturnRequest>().HasKey(r => r.Id);
+            modelBuilder.Entity<ReturnRequest>()
+                .Property(r => r.RequestedAmount)
+                .HasPrecision(18, 2);
+            modelBuilder.Entity<ReturnRequest>()
+                .Property(r => r.ApprovedAmount)
+                .HasPrecision(18, 2);
             modelBuilder.Entity<SupportCase>().HasKey(s => s.Id);
             modelBuilder.Entity<DefectReport>().HasKey(d => d.Id);
             modelBuilder.Entity<MissionProgress>().HasKey(m => m.Id);
             modelBuilder.Entity<QaFeatureFlag>().HasKey(f => f.Key);
             modelBuilder.Entity<AuditLog>().HasKey(a => a.Id);
+
+            modelBuilder.Entity<Product>()
+                .Property(p => p.Price)
+                .HasPrecision(18, 2);
+            modelBuilder.Entity<Product>()
+                .Property(p => p.OldPrice)
+                .HasPrecision(18, 2);
+            modelBuilder.Entity<Order>()
+                .Property(o => o.Total)
+                .HasPrecision(18, 2);
 
             modelBuilder.Entity<Category>().HasData(
                 new Category { Id = "cat-1", Name = "Furniture", Description = "Architectural sofas, dining, and lounge essentials", To = "/products", Tone = "category-furniture" },
@@ -58,6 +95,7 @@ namespace LewisStores.Api.Data
 
             modelBuilder.Entity<User>().HasData(BuildUsersSeed());
             modelBuilder.Entity<Order>().HasData(BuildOrdersSeed());
+            modelBuilder.Entity<OrderItem>().HasData(BuildOrderItemsSeed());
             modelBuilder.Entity<Delivery>().HasData(BuildDeliveriesSeed());
             modelBuilder.Entity<PaymentMethod>().HasData(BuildPaymentMethodsSeed());
             modelBuilder.Entity<ReturnRequest>().HasData(BuildReturnRequestsSeed());
@@ -362,6 +400,37 @@ namespace LewisStores.Api.Data
             }
 
             return orders;
+        }
+
+        private static IEnumerable<OrderItem> BuildOrderItemsSeed()
+        {
+            var items = new List<OrderItem>
+            {
+                new OrderItem { Id = 1, OrderId = "LWS-20419", ProductId = "p-0020", Quantity = 1, UnitPrice = 11799, LineTotal = 11799 },
+                new OrderItem { Id = 2, OrderId = "LWS-20388", ProductId = "luca-modular", Quantity = 1, UnitPrice = 24999, LineTotal = 24999 },
+                new OrderItem { Id = 3, OrderId = "LWS-20293", ProductId = "miren-table", Quantity = 1, UnitPrice = 7699, LineTotal = 7699 },
+                new OrderItem { Id = 4, OrderId = "LWS-20144", ProductId = "p-0015", Quantity = 1, UnitPrice = 19999, LineTotal = 19999 }
+            };
+
+            var id = 5;
+            for (var i = 20500; i <= 20749; i++)
+            {
+                var productIndex = ((i - 20500) % 320) + 1;
+                var pid = $"p-{productIndex:0000}";
+                var qty = (i % 3) + 1;
+                var unitPrice = 899 + ((i * 37) % 25000);
+                items.Add(new OrderItem
+                {
+                    Id = id++,
+                    OrderId = $"LWS-{i}",
+                    ProductId = pid,
+                    Quantity = qty,
+                    UnitPrice = unitPrice,
+                    LineTotal = unitPrice * qty
+                });
+            }
+
+            return items;
         }
 
         private static IEnumerable<Delivery> BuildDeliveriesSeed()

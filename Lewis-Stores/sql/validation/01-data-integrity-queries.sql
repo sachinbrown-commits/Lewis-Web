@@ -79,9 +79,11 @@ GO
 SELECT 
     o.Id as [OrderId],
     o.Total as [StoredTotal],
-    COUNT(*) as [ItemCount],
-    'Match' as [Status]
+    COALESCE(SUM(oi.LineTotal), 0) as [CalculatedTotal],
+    COUNT(oi.Id) as [ItemCount],
+    CASE WHEN o.Total = COALESCE(SUM(oi.LineTotal), 0) THEN 'Match' ELSE 'Mismatch' END as [Status]
 FROM Orders o
+LEFT JOIN OrderItems oi ON oi.OrderId = o.Id
 GROUP BY o.Id, o.Total
 ORDER BY o.Id;
 GO
@@ -242,13 +244,16 @@ GO
 -- ============================================================================
 
 -- T-DB-INT-016: Verify all Orders have valid Product references (if items tracked)
-SELECT 
+-- Show orders and counts of associated items and any missing product references
+SELECT
     o.Id as [OrderId],
-    o.Items as [OrderItems],
-    COUNT(p.Id) as [MatchingProductCount]
+    COUNT(oi.Id) as [OrderItemCount],
+    SUM(CASE WHEN p.Id IS NULL THEN 1 ELSE 0 END) as [MissingProductRefs],
+    STRING_AGG(CONCAT(oi.ProductId, ' x', oi.Quantity), ', ') WITHIN GROUP (ORDER BY oi.Id) as [ItemsSummary]
 FROM Orders o
-LEFT JOIN Products p ON o.Items LIKE '%' + p.Id + '%'
-GROUP BY o.Id, o.Items
+LEFT JOIN OrderItems oi ON oi.OrderId = o.Id
+LEFT JOIN Products p ON p.Id = oi.ProductId
+GROUP BY o.Id
 ORDER BY o.Id;
 GO
 

@@ -70,6 +70,22 @@ CREATE TABLE [Orders] (
 );
 GO
 
+-- OrderItems Table
+CREATE TABLE [OrderItems] (
+    [Id] INT IDENTITY(1,1) NOT NULL,
+    [OrderId] NVARCHAR(450) NOT NULL,
+    [ProductId] NVARCHAR(450) NOT NULL,
+    [Quantity] INT NOT NULL DEFAULT 1,
+    [UnitPrice] DECIMAL(18,2) NOT NULL,
+    [LineTotal] DECIMAL(18,2) NOT NULL,
+    CONSTRAINT [PK_OrderItems] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_OrderItems_Orders] FOREIGN KEY ([OrderId]) REFERENCES [Orders]([Id]) ON DELETE CASCADE,
+    CONSTRAINT [FK_OrderItems_Products] FOREIGN KEY ([ProductId]) REFERENCES [Products]([Id]),
+    INDEX [IX_OrderItems_OrderId] ([OrderId]),
+    INDEX [IX_OrderItems_ProductId] ([ProductId])
+);
+GO
+
 -- Deliveries Table
 CREATE TABLE [Deliveries] (
     [Id] INT IDENTITY(1,1) NOT NULL,

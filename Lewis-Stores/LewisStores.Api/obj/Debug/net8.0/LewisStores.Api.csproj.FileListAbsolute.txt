@@ -452,4 +452,3 @@ C:\Users\Anoona Sithole\Desktop\Lewis-Web\Lewis-Stores\LewisStores.Api\obj\Debug
 C:\Users\Anoona Sithole\Desktop\Lewis-Web\Lewis-Stores\LewisStores.Api\obj\Debug\net8.0\LewisStores.Api.pdb
 C:\Users\Anoona Sithole\Desktop\Lewis-Web\Lewis-Stores\LewisStores.Api\obj\Debug\net8.0\LewisStores.Api.genruntimeconfig.cache
 C:\Users\Anoona Sithole\Desktop\Lewis-Web\Lewis-Stores\LewisStores.Api\obj\Debug\net8.0\ref\LewisStores.Api.dll
-C:\Users\Anoona Sithole\Desktop\Lewis-Web\Lewis-Stores\LewisStores.Api\bin\Debug\net8.0\LewisStores.Api.exe

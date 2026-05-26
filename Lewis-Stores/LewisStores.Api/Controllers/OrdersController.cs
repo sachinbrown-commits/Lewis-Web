@@ -21,6 +21,14 @@ namespace LewisStores.Api.Controllers
         {
             public decimal Total { get; set; }
             public string Items { get; set; } = string.Empty;
+            public List<CreateOrderItem>? ItemsList { get; set; }
+        }
+
+        public class CreateOrderItem
+        {
+            public string ProductId { get; set; } = string.Empty;
+            public int Quantity { get; set; }
+            public decimal UnitPrice { get; set; }
         }
 
         public OrdersController(AppDbContext context)
@@ -43,6 +51,7 @@ namespace LewisStores.Api.Controllers
 
             var orders = await _context.Orders
                 .Where(o => o.UserId == userId)
+                .Include(o => o.OrderItems)
                 .OrderByDescending(o => o.Date)
                 .ToListAsync();
 
@@ -84,12 +93,41 @@ namespace LewisStores.Api.Controllers
                 Id = "LWS-" + Random.Shared.Next(10000, 99999),
                 Date = DateTime.UtcNow.ToString("dd MMM yyyy"),
                 Status = "Processing",
-                Total = request.Total,
                 UserId = userId,
                 Items = request.Items
             };
 
+            // If structured items provided, compute totals and create normalized OrderItems
+            var createdOrderItems = new List<OrderItem>();
+            if (request.ItemsList != null && request.ItemsList.Count > 0)
+            {
+                foreach (var it in request.ItemsList)
+                {
+                    var lineTotal = it.UnitPrice * it.Quantity;
+                    createdOrderItems.Add(new OrderItem
+                    {
+                        ProductId = it.ProductId,
+                        Quantity = it.Quantity,
+                        UnitPrice = it.UnitPrice,
+                        LineTotal = lineTotal,
+                        OrderId = order.Id
+                    });
+                }
+
+                order.Total = createdOrderItems.Sum(x => x.LineTotal);
+                order.OrderItems = createdOrderItems;
+            }
+            else
+            {
+                order.Total = request.Total;
+            }
+
             _context.Orders.Add(order);
+            if (createdOrderItems.Count > 0)
+            {
+                _context.OrderItems.AddRange(createdOrderItems);
+            }
+
             await _context.SaveChangesAsync();
 
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
