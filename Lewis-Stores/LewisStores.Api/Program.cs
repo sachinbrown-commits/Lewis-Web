@@ -253,7 +253,10 @@ static void EnsureCompatibilitySchema(AppDbContext db)
         BEGIN
             ALTER TABLE [dbo].[Products] ADD [CategoryId] NVARCHAR(450) NULL;
         END
+        """);
 
+    db.Database.ExecuteSqlRaw(
+        """
         IF OBJECT_ID(N'[dbo].[Categories]', N'U') IS NOT NULL AND COL_LENGTH(N'[dbo].[Products]', N'CategoryId') IS NOT NULL
         BEGIN
             ;WITH DistinctCategories AS

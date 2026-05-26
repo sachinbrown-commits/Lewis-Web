@@ -34,26 +34,26 @@ INSERT INTO [Categories] ([Id], [Name], [Description], [To], [Tone]) VALUES
 GO
 
 -- Seed Products
-INSERT INTO [Products] ([Id], [Title], [Description], [Price], [OldPrice], [Tag], [Rating], [Category], [Image], [Sku], [StockQuantity], [IsActive]) VALUES
+INSERT INTO [Products] ([Id], [Title], [Description], [Price], [OldPrice], [Tag], [Rating], [Category], [CategoryId], [Image], [Sku], [StockQuantity], [IsActive]) VALUES
 -- Furniture Products
-(N'luca-modular', N'Luca Modular Sofa', N'Textured ivory upholstery with brushed oak legs.', 24999.00, 27999.00, N'Limited Edition', 4.8, N'Furniture', N'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&q=80&w=1200', N'LEW-FUR-0001', 12, 1),
-(N'atlas-lounge', N'Atlas Lounge Chair', N'Low-profile silhouette with layered cushioning.', 10999.00, NULL, N'Best Seller', 4.6, N'Furniture', N'https://images.unsplash.com/photo-1501045661006-fcebe0257c3f?auto=format&fit=crop&q=80&w=1200', N'LEW-FUR-0002', 9, 1),
-(N'miren-table', N'Miren Coffee Table', N'Solid ash base and honed stone top.', 7699.00, NULL, NULL, 4.5, N'Furniture', N'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&q=80&w=1200', N'LEW-FUR-0003', 15, 1),
+(N'luca-modular', N'Luca Modular Sofa', N'Textured ivory upholstery with brushed oak legs.', 24999.00, 27999.00, N'Limited Edition', 4.8, N'Furniture', N'cat-1', N'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&q=80&w=1200', N'LEW-FUR-0001', 12, 1),
+(N'atlas-lounge', N'Atlas Lounge Chair', N'Low-profile silhouette with layered cushioning.', 10999.00, NULL, N'Best Seller', 4.6, N'Furniture', N'cat-1', N'https://images.unsplash.com/photo-1501045661006-fcebe0257c3f?auto=format&fit=crop&q=80&w=1200', N'LEW-FUR-0002', 9, 1),
+(N'miren-table', N'Miren Coffee Table', N'Solid ash base and honed stone top.', 7699.00, NULL, NULL, 4.5, N'Furniture', N'cat-1', N'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&q=80&w=1200', N'LEW-FUR-0003', 15, 1),
 -- Electronics Products
-(N'aurora-speaker', N'Aurora Wireless Speaker', N'Premium sound system with adaptive bass.', 8999.00, 9999.00, N'Best Seller', 4.7, N'Electronics', N'https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?auto=format&fit=crop&q=80&w=1200', N'LEW-ELE-0001', 20, 1),
-(N'vertex-monitor', N'Vertex 4K Monitor', N'Ultra-wide curved 38-inch display.', 15999.00, 17999.00, N'New', 4.9, N'Electronics', N'https://images.unsplash.com/photo-1527864550417-7fd231fc53f7?auto=format&fit=crop&q=80&w=1200', N'LEW-ELE-0002', 8, 1),
+(N'aurora-speaker', N'Aurora Wireless Speaker', N'Premium sound system with adaptive bass.', 8999.00, 9999.00, N'Best Seller', 4.7, N'Electronics', N'cat-3', N'https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?auto=format&fit=crop&q=80&w=1200', N'LEW-ELE-0001', 20, 1),
+(N'vertex-monitor', N'Vertex 4K Monitor', N'Ultra-wide curved 38-inch display.', 15999.00, 17999.00, N'New', 4.9, N'Electronics', N'cat-3', N'https://images.unsplash.com/photo-1527864550417-7fd231fc53f7?auto=format&fit=crop&q=80&w=1200', N'LEW-ELE-0002', 8, 1),
 -- Bedding Products
-(N'cloudrest-mattress', N'CloudRest Memory Foam Mattress', N'Orthopaedic support with cooling gel layer.', 22999.00, 25999.00, N'Best Seller', 4.8, N'Bedding', N'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&q=80&w=1200', N'LEW-BED-0001', 6, 1),
-(N'luxe-pillows', N'Luxe Down Pillows (Set of 2)', N'Premium Hungarian goose down.', 5999.00, NULL, NULL, 4.4, N'Bedding', N'https://images.unsplash.com/photo-1584622181563-430f63602d4b?auto=format&fit=crop&q=80&w=1200', N'LEW-BED-0002', 25, 1),
+(N'cloudrest-mattress', N'CloudRest Memory Foam Mattress', N'Orthopaedic support with cooling gel layer.', 22999.00, 25999.00, N'Best Seller', 4.8, N'Bedding', N'cat-5', N'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&q=80&w=1200', N'LEW-BED-0001', 6, 1),
+(N'luxe-pillows', N'Luxe Down Pillows (Set of 2)', N'Premium Hungarian goose down.', 5999.00, NULL, NULL, 4.4, N'Bedding', N'cat-5', N'https://images.unsplash.com/photo-1584622181563-430f63602d4b?auto=format&fit=crop&q=80&w=1200', N'LEW-BED-0002', 25, 1),
 -- Appliances
-(N'espresso-machine', N'Professional Espresso Machine', N'Commercial-grade coffee maker.', 13999.00, 15999.00, N'New', 4.7, N'Appliances', N'https://images.unsplash.com/photo-1559056199-641a0ac8b8d5?auto=format&fit=crop&q=80&w=1200', N'LEW-APP-0001', 5, 1),
-(N'air-fryer', N'Smart Air Fryer Oven', N'IoT-enabled with app control.', 9999.00, 11999.00, N'Best Seller', 4.6, N'Appliances', N'https://images.unsplash.com/photo-1584568694244-14fbbc2bd3a1?auto=format&fit=crop&q=80&w=1200', N'LEW-APP-0002', 14, 1),
+(N'espresso-machine', N'Professional Espresso Machine', N'Commercial-grade coffee maker.', 13999.00, 15999.00, N'New', 4.7, N'Appliances', N'cat-2', N'https://images.unsplash.com/photo-1559056199-641a0ac8b8d5?auto=format&fit=crop&q=80&w=1200', N'LEW-APP-0001', 5, 1),
+(N'air-fryer', N'Smart Air Fryer Oven', N'IoT-enabled with app control.', 9999.00, 11999.00, N'Best Seller', 4.6, N'Appliances', N'cat-2', N'https://images.unsplash.com/photo-1584568694244-14fbbc2bd3a1?auto=format&fit=crop&q=80&w=1200', N'LEW-APP-0002', 14, 1),
 -- Decor
-(N'pendant-light', N'Scandinavian Pendant Light', N'Hand-blown glass with brass accents.', 3999.00, NULL, NULL, 4.5, N'Decor', N'https://images.unsplash.com/photo-1523175335684-37898b6baf30?auto=format&fit=crop&q=80&w=1200', N'LEW-DEC-0001', 18, 1),
-(N'mirror-wall', N'Large Wall Mirror with Frame', N'Gold-finished metal frame.', 5999.00, 6999.00, N'Limited Edition', 4.3, N'Decor', N'https://images.unsplash.com/photo-1556740738-b6a63e27c4df?auto=format&fit=crop&q=80&w=1200', N'LEW-DEC-0002', 11, 1),
+(N'pendant-light', N'Scandinavian Pendant Light', N'Hand-blown glass with brass accents.', 3999.00, NULL, NULL, 4.5, N'Decor', N'cat-4', N'https://images.unsplash.com/photo-1523175335684-37898b6baf30?auto=format&fit=crop&q=80&w=1200', N'LEW-DEC-0001', 18, 1),
+(N'mirror-wall', N'Large Wall Mirror with Frame', N'Gold-finished metal frame.', 5999.00, 6999.00, N'Limited Edition', 4.3, N'Decor', N'cat-4', N'https://images.unsplash.com/photo-1556740738-b6a63e27c4df?auto=format&fit=crop&q=80&w=1200', N'LEW-DEC-0002', 11, 1),
 -- Office
-(N'ergonomic-desk', N'Ergonomic Standing Desk', N'Motorized height adjustment.', 19999.00, 22999.00, N'Best Seller', 4.8, N'Office', N'https://images.unsplash.com/photo-1593642532400-2682a8a60fc8?auto=format&fit=crop&q=80&w=1200', N'LEW-OFF-0001', 7, 1),
-(N'office-chair', N'Executive Office Chair', N'Mesh back with lumbar support.', 12999.00, 14999.00, N'Best Seller', 4.7, N'Office', N'https://images.unsplash.com/photo-1611269431281-ca522b8cb895?auto=format&fit=crop&q=80&w=1200', N'LEW-OFF-0002', 10, 1);
+(N'ergonomic-desk', N'Ergonomic Standing Desk', N'Motorized height adjustment.', 19999.00, 22999.00, N'Best Seller', 4.8, N'Office', N'cat-6', N'https://images.unsplash.com/photo-1593642532400-2682a8a60fc8?auto=format&fit=crop&q=80&w=1200', N'LEW-OFF-0001', 7, 1),
+(N'office-chair', N'Executive Office Chair', N'Mesh back with lumbar support.', 12999.00, 14999.00, N'Best Seller', 4.7, N'Office', N'cat-6', N'https://images.unsplash.com/photo-1611269431281-ca522b8cb895?auto=format&fit=crop&q=80&w=1200', N'LEW-OFF-0002', 10, 1);
 GO
 
 -- Seed Users (Test Accounts for QE)
