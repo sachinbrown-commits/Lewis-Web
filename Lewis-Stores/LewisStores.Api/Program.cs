@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Reflection;
 using LewisStores.Api.Data;
 using LewisStores.Api.Swagger;
@@ -11,7 +12,11 @@ using Swashbuckle.AspNetCore.SwaggerUI;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+    });
 
 // Configure DbContext with SQL Server
 var defaultConnection = "Server=localhost;Database=LewisStoresDb;Trusted_Connection=true;Encrypt=false;";

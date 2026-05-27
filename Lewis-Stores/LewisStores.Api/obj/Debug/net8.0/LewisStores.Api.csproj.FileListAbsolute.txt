@@ -301,10 +301,21 @@ C:/Users/Anoona Sithole/Desktop/Lewis-Web/Lewis-Stores/LewisStores.Api/obj/Debug
 /mnt/c/Users/Anoona Sithole/Desktop/Lewis-Web/Lewis-Stores/LewisStores.Api/obj/Debug/net8.0/LewisStores.Api.pdb
 /mnt/c/Users/Anoona Sithole/Desktop/Lewis-Web/Lewis-Stores/LewisStores.Api/obj/Debug/net8.0/LewisStores.Api.genruntimeconfig.cache
 /mnt/c/Users/Anoona Sithole/Desktop/Lewis-Web/Lewis-Stores/LewisStores.Api/obj/Debug/net8.0/ref/LewisStores.Api.dll
+/tmp/lewis-stores-api-build/appsettings.Development.json
+/tmp/lewis-stores-api-build/appsettings.json
+/tmp/lewis-stores-api-build/LewisStores.Api.staticwebassets.runtime.json
+/tmp/lewis-stores-api-build/LewisStores.Api.staticwebassets.endpoints.json
+/tmp/lewis-stores-api-build/LewisStores.Api
+/tmp/lewis-stores-api-build/LewisStores.Api.deps.json
+/tmp/lewis-stores-api-build/LewisStores.Api.runtimeconfig.json
+/tmp/lewis-stores-api-build/LewisStores.Api.dll
+/tmp/lewis-stores-api-build/LewisStores.Api.pdb
+/tmp/lewis-stores-api-build/LewisStores.Api.xml
 C:\Users\Anoona Sithole\Desktop\Lewis-Web\Lewis-Stores\LewisStores.Api\bin\Debug\net8.0\appsettings.Development.json
 C:\Users\Anoona Sithole\Desktop\Lewis-Web\Lewis-Stores\LewisStores.Api\bin\Debug\net8.0\appsettings.json
 C:\Users\Anoona Sithole\Desktop\Lewis-Web\Lewis-Stores\LewisStores.Api\bin\Debug\net8.0\LewisStores.Api.staticwebassets.endpoints.json
 C:\Users\Anoona Sithole\Desktop\Lewis-Web\Lewis-Stores\LewisStores.Api\bin\Debug\net8.0\LewisStores.Api.staticwebassets.runtime.json
+C:\Users\Anoona Sithole\Desktop\Lewis-Web\Lewis-Stores\LewisStores.Api\bin\Debug\net8.0\LewisStores.Api.exe
 C:\Users\Anoona Sithole\Desktop\Lewis-Web\Lewis-Stores\LewisStores.Api\bin\Debug\net8.0\LewisStores.Api.deps.json
 C:\Users\Anoona Sithole\Desktop\Lewis-Web\Lewis-Stores\LewisStores.Api\bin\Debug\net8.0\LewisStores.Api.runtimeconfig.json
 C:\Users\Anoona Sithole\Desktop\Lewis-Web\Lewis-Stores\LewisStores.Api\bin\Debug\net8.0\LewisStores.Api.dll

@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "XibzlFASC/4=",
+  "dgSpecHash": "Lwow4Rb38vA=",
   "success": true,
   "projectFilePath": "C:\\Users\\Anoona Sithole\\Desktop\\Lewis-Web\\Lewis-Stores\\LewisStores.Api\\LewisStores.Api.csproj",
   "expectedPackageFiles": [
@@ -84,7 +84,8 @@
     "C:\\Users\\Anoona Sithole\\.nuget\\packages\\system.windows.extensions\\6.0.0\\system.windows.extensions.6.0.0.nupkg.sha512",
     "C:\\Users\\Anoona Sithole\\.nuget\\packages\\microsoft.netcore.app.ref\\8.0.27\\microsoft.netcore.app.ref.8.0.27.nupkg.sha512",
     "C:\\Users\\Anoona Sithole\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\8.0.27\\microsoft.windowsdesktop.app.ref.8.0.27.nupkg.sha512",
-    "C:\\Users\\Anoona Sithole\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\8.0.27\\microsoft.aspnetcore.app.ref.8.0.27.nupkg.sha512"
+    "C:\\Users\\Anoona Sithole\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\8.0.27\\microsoft.aspnetcore.app.ref.8.0.27.nupkg.sha512",
+    "C:\\Users\\Anoona Sithole\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\8.0.27\\microsoft.netcore.app.host.win-x64.8.0.27.nupkg.sha512"
   ],
   "logs": []
 }
